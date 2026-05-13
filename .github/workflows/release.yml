@@ -52,13 +52,13 @@ jobs:
           # Build release body
           BODY="## OpenArc ${VERSION}\n\n"
           if [ -n "$ADDED" ]; then
-            BODY+="### 🆕 新增\n${ADDED}\n\n"
+            BODY+="### 🆕 Added\n${ADDED}\n\n"
           fi
           if [ -n "$UPDATED" ]; then
-            BODY+="### 🔧 优化\n${UPDATED}\n\n"
+            BODY+="### 🔧 Changed\n${UPDATED}\n\n"
           fi
           if [ -n "$OTHER" ]; then
-            BODY+="### 📋 其他\n${OTHER}\n\n"
+            BODY+="### 📋 Other\n${OTHER}\n\n"
           fi
           BODY+="---\n**Full Changelog:** https://github.com/${{ github.repository }}/compare/${{ steps.version.outputs.PREV_TAG }}...${VERSION}"
           echo -e "$BODY" > /tmp/release_notes.md
