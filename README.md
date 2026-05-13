@@ -10,6 +10,13 @@
 </p>
 
 <p align="center">
+  <img alt="OpenArc" src="https://img.shields.io/badge/OpenArc-AI%20governance-1685d9?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.1.3" src="https://img.shields.io/badge/version-0.1.3-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
+</p>
+
+<p align="center">
   <img src="assets/openarc_poster.png" alt="OpenArc introduction poster">
 </p>
 
