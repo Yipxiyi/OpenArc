@@ -1,8 +1,16 @@
-# OpenArc
+<p align="center">
+  <img src="assets/openarc_icon.png" alt="OpenArc icon" width="120">
+</p>
+
+<h1 align="center">OpenArc</h1>
 
 <p align="center">
   <a href="#english"><strong>English</strong></a> ·
   <a href="#中文说明"><strong>中文</strong></a>
+</p>
+
+<p align="center">
+  <img src="assets/openarc_poster.png" alt="OpenArc introduction poster">
 </p>
 
 <a id="english"></a>
