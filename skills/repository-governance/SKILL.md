@@ -32,12 +32,41 @@ Use the result as a starting point, then verify important findings manually.
 
 Prefer existing repository files over generated defaults. Common OpenArc sources:
 
+Default read priority:
+
+- `docs/PROJECT_BRIEF.md`
+- `docs/CODE_STYLE.md`
+- `docs/TASKS.md`
+- existing `AGENT.md` or `AGENTS.md`
+
+Conditional read:
+
 - `docs/PRD.md`
+- `docs/SPEC.md`
+- `docs/ARCHITECTURE.md`
 - `docs/DESIGN.md`
 - `docs/BRAND.md`
 - latest `docs/specs/*.md`
 - `docs/assets/*`
-- existing `AGENT.md` or `AGENTS.md`
+- `docs/CHANGELOG_AI.md`
+
+Rarely read:
+
+- `docs/archive/*`
+
+## Context Budget Rule
+
+Use the smallest context required to safely complete the task.
+
+Do not automatically load:
+
+- archived changelogs
+- old completed tasks
+- deprecated specs
+- outdated implementation notes
+- unrelated source files
+
+Only load archived context when the task explicitly requires historical investigation.
 
 ## Agent Guide Rules
 
@@ -58,4 +87,5 @@ The guide should cover:
 - Do not rewrite existing governance docs just to match the template.
 - Do not invent architecture facts the repository does not show.
 - Do not leave temporary files or duplicate documentation trees.
+- Do not make `docs/archive/*` part of default reading.
 - Report created files, modified files, detected governance docs, conflicts, and recommended next steps.

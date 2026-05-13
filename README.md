@@ -8,9 +8,9 @@ It helps developers initialize and sustain repositories where coding agents rema
 
 OpenArc is early-stage and intentionally lightweight.
 
-Current plugin manifest version: `0.1.0`
+Current plugin manifest version: `0.1.1`
 
-Recommended next release after the current usability and open-source readiness work: `0.2.0` pending maintainer confirmation.
+Recommended next minor release after the current usability and open-source readiness work: `0.2.0` pending maintainer confirmation.
 
 ## What OpenArc Solves
 
@@ -69,6 +69,46 @@ For plugin maintainers, validate the plugin itself with:
 python3 plugins/openarc/scripts/openarc.py doctor plugins/openarc
 ```
 
+## Install In Codex
+
+For a local Codex install, place the plugin under `~/plugins/openarc` and register it in `~/.agents/plugins/marketplace.json`.
+
+From a repository checkout:
+
+```bash
+mkdir -p ~/plugins
+cp -R plugins/openarc ~/plugins/openarc
+```
+
+Then add this entry to the `plugins` array in `~/.agents/plugins/marketplace.json`:
+
+```json
+{
+  "name": "openarc",
+  "source": {
+    "source": "local",
+    "path": "./plugins/openarc"
+  },
+  "policy": {
+    "installation": "AVAILABLE",
+    "authentication": "ON_INSTALL"
+  },
+  "category": "Developer Tools"
+}
+```
+
+Validate the local install:
+
+```bash
+python3 ~/plugins/openarc/scripts/openarc.py doctor ~/plugins/openarc
+```
+
+Restart Codex after registering the plugin. Then try:
+
+```text
+Use OpenArc here.
+```
+
 ## Plugin Layout
 
 ```txt
@@ -107,6 +147,7 @@ OpenArc is split into focused skills so agents only load the guidance needed for
 | `release-workflow` | Cutting or merging branches, committing, opening PRs, and triggering GitHub release updates. |
 | `workspace-migration` | Migrating existing workspaces into OpenArc conventions without destructive rewrites. |
 | `open-source-maintenance` | Preparing the plugin or a governed repo for public open-source maintenance. |
+| `change-archive-governance` | Maintaining `docs/CHANGELOG_AI.md`, `docs/archive/`, and context-budget-aware historical memory. |
 
 ## Repository Foundation
 
@@ -120,12 +161,31 @@ OpenArc expects these files when relevant:
 - `docs/plans/*.md`
 - `docs/tasks/*.md`
 - `docs/assets/*`
+- `docs/CHANGELOG_AI.md`
+- `docs/archive/`
 - `CHANGELOG.md`
 - `CONTRIBUTING.md`
 - `LICENSE`
 - release notes or GitHub release configuration when present
 
 Existing files always win. OpenArc should preserve intent and patch carefully instead of rewriting working repository conventions.
+
+## Change Memory and Archive Governance
+
+OpenArc treats AI-assisted development as a long-running collaboration.
+
+`docs/CHANGELOG_AI.md` keeps recent AI changes visible and actionable.
+
+`docs/archive/` stores older historical context without forcing agents to load it every session.
+
+This keeps repositories traceable while protecting context budgets.
+
+Recommended retention:
+
+- keep only the last 10-20 AI-assisted entries in `docs/CHANGELOG_AI.md`
+- move older entries to `docs/archive/`
+- never delete historical context just to reduce context size
+- read archived material only for regressions, architectural history, or prior AI decision investigation
 
 ## Helper Scripts
 
@@ -206,6 +266,8 @@ Templates live in `templates/`:
 - `TASKS.template.md`
 - `RELEASE.template.md`
 - `MIGRATION.template.md`
+- `CHANGELOG_AI.template.md`
+- `ARCHIVE_INDEX.template.md`
 
 Examples live in `examples/`.
 

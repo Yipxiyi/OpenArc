@@ -27,14 +27,22 @@ REQUIRED_TEMPLATES = [
     "TASKS.template.md",
     "RELEASE.template.md",
     "MIGRATION.template.md",
+    "CHANGELOG_AI.template.md",
+    "ARCHIVE_INDEX.template.md",
 ]
 
 GOVERNANCE_FILES = [
     "AGENT.md",
     "AGENTS.md",
+    "docs/PROJECT_BRIEF.md",
+    "docs/CODE_STYLE.md",
+    "docs/TASKS.md",
     "docs/PRD.md",
+    "docs/SPEC.md",
+    "docs/ARCHITECTURE.md",
     "docs/DESIGN.md",
     "docs/BRAND.md",
+    "docs/CHANGELOG_AI.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "LICENSE",
@@ -45,6 +53,7 @@ GOVERNANCE_DIRS = [
     "docs/plans",
     "docs/tasks",
     "docs/assets",
+    "docs/archive",
     "docs/assets/brand",
     "docs/assets/icons",
     "docs/assets/illustrations",
@@ -201,6 +210,8 @@ def recommend(
 ) -> str:
     if not files.get("AGENT.md") and not files.get("AGENTS.md"):
         return "Start with repository-governance and create an agent guide."
+    if not files.get("docs/CHANGELOG_AI.md") or not dirs.get("docs/archive"):
+        return "Use change-archive-governance to set up AI change memory and archive policy."
     if not files.get("docs/PRD.md"):
         return "Use product-governance to clarify and create docs/PRD.md."
     if not files.get("docs/DESIGN.md"):
