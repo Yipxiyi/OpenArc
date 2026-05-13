@@ -1,0 +1,50 @@
+{
+  "name": "openarc",
+  "version": "0.1.0",
+  "description": "AI-native repository initialization and governance for sustainable vibe-coded projects.",
+  "author": {
+    "name": "OpenArc",
+    "email": "[TODO: contact@example.com]",
+    "url": "[TODO: https://example.com/openarc]"
+  },
+  "homepage": "[TODO: https://example.com/openarc]",
+  "repository": "[TODO: https://github.com/owner/openarc]",
+  "license": "MIT",
+  "keywords": [
+    "ai-governance",
+    "spec-driven-development",
+    "vibe-coding",
+    "repository-governance",
+    "release-workflow",
+    "semantic-versioning",
+    "workspace-migration",
+    "open-source",
+    "repository-scan",
+    "governance-audit"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "OpenArc",
+    "shortDescription": "AI-native governance for long-running coding-agent projects.",
+    "longDescription": "OpenArc helps AI coding agents initialize, understand, and maintain repositories through lightweight source-of-truth docs, PRDs, specs, plans, tasks, design guidance, brand guidance, asset structure, versioning rules, migration workflows, open-source maintenance, and release governance.",
+    "developerName": "OpenArc",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Analyze",
+      "Generate",
+      "Review",
+      "Release"
+    ],
+    "websiteURL": "[TODO: https://example.com/openarc]",
+    "privacyPolicyURL": "[TODO: https://example.com/privacy]",
+    "termsOfServiceURL": "[TODO: https://example.com/terms]",
+    "defaultPrompt": [
+      "Scan this repo with OpenArc and tell me what to do first.",
+      "Create a lightweight spec and implementation plan.",
+      "Migrate this workspace to OpenArc conventions."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
