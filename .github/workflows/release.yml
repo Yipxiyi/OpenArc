@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          # Extract section between this version header and the next one
+          NOTES=$(sed -n "/^## \[${VERSION}\]/,/^## \[/p" CHANGELOG.md | sed '$d' | tail -n +2)
+          if [ -z "$NOTES" ]; then
+            NOTES=$(sed -n "/^## ${VERSION}/,/^## /p" CHANGELOG.md | sed '$d' | tail -n +2)
+          fi
+          if [ -z "$NOTES" ]; then
+            NOTES="See CHANGELOG.md for details."
+          fi
+          # Write to file to preserve multiline
+          echo "$NOTES" > /tmp/release_notes.md
+          # Append full changelog link
+          echo "" >> /tmp/release_notes.md
+          echo "---" >> /tmp/release_notes.md
+          echo "**Full Changelog:** https://github.com/${{ github.repository }}/compare/v0.1.0...${VERSION}" >> /tmp/release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "OpenArc ${{ steps.version.outputs.VERSION }}"
+          body_path: /tmp/release_notes.md
+          generate_release_notes: true
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
