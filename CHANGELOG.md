@@ -6,6 +6,11 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.1.3
+
+- Fixed repository scans so `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported as optional public maintenance files instead of baseline governance gaps.
+- Updated README guidance to clarify the difference between core OpenArc governance files and public/open-source maintenance files.
+
 ## 0.1.2
 
 - Reworked README for public GitHub use with English/Chinese sections and top language jump links.

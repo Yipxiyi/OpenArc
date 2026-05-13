@@ -43,6 +43,9 @@ GOVERNANCE_FILES = [
     "docs/DESIGN.md",
     "docs/BRAND.md",
     "docs/CHANGELOG_AI.md",
+]
+
+OPTIONAL_PUBLIC_FILES = [
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "LICENSE",
@@ -166,6 +169,9 @@ def find_manifest_placeholders(manifest: dict[str, Any]) -> list[str]:
 
 def scan(repo_root: Path, output_format: str) -> int:
     files = {path: rel_exists(repo_root, path) for path in GOVERNANCE_FILES}
+    optional_public_files = {
+        path: rel_exists(repo_root, path) for path in OPTIONAL_PUBLIC_FILES
+    }
     dirs = {path: rel_exists(repo_root, path) for path in GOVERNANCE_DIRS}
 
     spec_count = count_files(repo_root / "docs" / "specs", "*.md")
@@ -178,6 +184,7 @@ def scan(repo_root: Path, output_format: str) -> int:
     payload = {
         "root": str(repo_root),
         "files": files,
+        "optional_public_files": optional_public_files,
         "directories": dirs,
         "counts": {
             "specs": spec_count,
@@ -185,6 +192,9 @@ def scan(repo_root: Path, output_format: str) -> int:
             "tasks": task_count,
         },
         "missing_files": missing_files,
+        "missing_optional_public_files": [
+            path for path, exists in optional_public_files.items() if not exists
+        ],
         "missing_directories": missing_dirs,
         "recommendation": recommend(files, dirs, spec_count, plan_count),
     }
@@ -230,9 +240,14 @@ def print_markdown_scan(payload: dict[str, Any]) -> None:
     print()
     print(f"Root: `{payload['root']}`")
     print()
-    print("## Files")
+    print("## Governance Files")
     for path, exists in payload["files"].items():
         mark = "ok" if exists else "missing"
+        print(f"- {mark}: `{path}`")
+    print()
+    print("## Optional Public Files")
+    for path, exists in payload["optional_public_files"].items():
+        mark = "ok" if exists else "optional"
         print(f"- {mark}: `{path}`")
     print()
     print("## Directories")

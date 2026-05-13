@@ -147,7 +147,7 @@ OpenArc is split into focused skills so agents only load the guidance needed for
 
 ## Repository Foundation
 
-OpenArc expects these files when relevant:
+OpenArc checks these governance files when relevant:
 
 - `AGENT.md` or `AGENTS.md`
 - `docs/PRD.md`
@@ -159,6 +159,9 @@ OpenArc expects these files when relevant:
 - `docs/assets/*`
 - `docs/CHANGELOG_AI.md`
 - `docs/archive/`
+
+For public or open-source repositories, OpenArc may also inspect release and maintenance files:
+
 - `CHANGELOG.md`
 - `CONTRIBUTING.md`
 - `LICENSE`
@@ -192,7 +195,7 @@ python3 plugins/openarc/scripts/openarc.py scan <repo-root> --format json
 python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 ```
 
-Use `scan` to identify missing governance files and the next recommended OpenArc workflow.
+Use `scan` to identify missing governance files and the next recommended OpenArc workflow. Public maintenance files such as `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported separately as optional public files, not as baseline governance gaps for every workspace.
 
 Use `doctor` before publishing plugin changes. It checks the manifest, required public files, required templates, and skill frontmatter.
 
@@ -401,7 +404,7 @@ OpenArc 被拆分为多个职责明确的 skills，避免 agent 每次加载不�
 
 ## 仓库治理基础文件
 
-OpenArc 会在需要时使用这些文件：
+OpenArc 会在需要时检查这些治理文件：
 
 - `AGENT.md` 或 `AGENTS.md`
 - `docs/PRD.md`
@@ -413,6 +416,9 @@ OpenArc 会在需要时使用这些文件：
 - `docs/assets/*`
 - `docs/CHANGELOG_AI.md`
 - `docs/archive/`
+
+对于公开或开源仓库，OpenArc 也可能检查发布与维护文件：
+
 - `CHANGELOG.md`
 - `CONTRIBUTING.md`
 - `LICENSE`
@@ -446,7 +452,7 @@ python3 plugins/openarc/scripts/openarc.py scan <repo-root> --format json
 python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 ```
 
-`scan` 用于识别缺失的治理文件，并给出下一步推荐流程。
+`scan` 用于识别缺失的治理文件，并给出下一步推荐流程。`CHANGELOG.md`、`CONTRIBUTING.md`、`LICENSE` 这类公开维护文件会单独作为 optional public files 汇报，不再作为所有工作区的基础治理缺口。
 
 `doctor` 用于发布插件变更前检查 manifest、公开文件、模板和 skill frontmatter。
 
