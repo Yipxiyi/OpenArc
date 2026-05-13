@@ -45,6 +45,8 @@
       "Create a lightweight spec and implementation plan.",
       "Migrate this workspace to OpenArc conventions."
     ],
-    "brandColor": "#2563EB"
+    "brandColor": "#2563EB",
+    "composerIcon": "./assets/openarc_icon.png",
+    "logo": "./assets/openarc_icon.png"
   }
 }
