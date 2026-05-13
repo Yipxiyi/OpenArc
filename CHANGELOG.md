@@ -6,8 +6,10 @@ This project follows semantic versioning.
 
 ## Unreleased
 
-## 0.1.1
+## 0.1.2
 
+- Reworked README for public GitHub use with English/Chinese sections and top language jump links.
+- Removed internal status, release policy, and internal roadmap wording from README.
 - Added `change-archive-governance` for `CHANGELOG_AI.md`, archive policy, and context-budget-aware repository reading.
 - Added `CHANGELOG_AI.template.md` and `ARCHIVE_INDEX.template.md`.
 - Updated agent and repository governance guidance with default, conditional, and rare read priorities.
