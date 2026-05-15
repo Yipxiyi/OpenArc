@@ -14,7 +14,7 @@
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-7c3aed?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Cursor rules" src="https://img.shields.io/badge/Cursor-rules-111827?style=for-the-badge&labelColor=4a4a4a">
-  <img alt="Version 0.2.0" src="https://img.shields.io/badge/version-0.2.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.3.0" src="https://img.shields.io/badge/version-0.3.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
 </p>
 
@@ -213,6 +213,20 @@ OpenArc is split into focused skills so agents only load the guidance needed for
 | `workspace-migration` | Migrating existing workspaces into OpenArc conventions without destructive rewrites. |
 | `open-source-maintenance` | Preparing the plugin or a governed repo for public open-source maintenance. |
 | `change-archive-governance` | Maintaining `docs/CHANGELOG_AI.md`, `docs/archive/`, and context-budget-aware historical memory. |
+
+## Component Pattern Governance
+
+OpenArc does not automatically rewrite design rules in the background. It makes component reuse an explicit agent workflow rule.
+
+For UI work, agents should:
+
+- check `docs/DESIGN.md` and existing components before creating a new component
+- reuse or extend an existing component when it covers roughly 70-80% of the use case
+- create a new component only when reuse would make the old component unclear, brittle, or over-generalized
+- add reusable component patterns to `docs/DESIGN.md` in the same change
+- keep one-off component rationale in the related spec or plan instead of adding noise to `docs/DESIGN.md`
+
+`docs/DESIGN.md` should document stable reusable patterns, not every component in the codebase.
 
 ## Repository Foundation
 
@@ -522,6 +536,20 @@ OpenArc 被拆分为多个职责明确的 skills，避免 agent 每次加载不�
 | `workspace-migration` | 将已有工作区迁移到 OpenArc 规范，避免破坏性重写。 |
 | `open-source-maintenance` | 准备插件或被治理仓库的开源维护材料。 |
 | `change-archive-governance` | 维护 `docs/CHANGELOG_AI.md`、`docs/archive/`，让历史记录可追溯但不挤占上下文。 |
+
+## 组件模式治理
+
+OpenArc 不会在后台自动重写设计规范。它把组件复用变成明确的 agent 工作规则。
+
+做 UI 相关工作时，agent 应该：
+
+- 新增组件前先查 `docs/DESIGN.md` 和现有组件
+- 现有组件覆盖约 70%-80% 场景时，优先复用或扩展
+- 只有复用会让旧组件变得不清晰、脆弱或过度泛化时，才新增组件
+- 新增可复用组件时，同步把组件模式沉淀到 `docs/DESIGN.md`
+- 一次性组件不写进 `docs/DESIGN.md`，而是在相关 spec 或 plan 中说明原因
+
+`docs/DESIGN.md` 应记录稳定可复用模式，而不是把代码库里的每个组件都列一遍。
 
 ## 仓库治理基础文件
 

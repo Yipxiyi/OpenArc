@@ -6,6 +6,13 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.3.0
+
+- Added component pattern governance rules to `design-governance` and `implementation-workflow`.
+- Updated design and agent templates so UI work checks existing components before creating new ones.
+- Added a `Component Patterns` section to the design template for reusable component guidance.
+- Updated Cursor adapters and README with component reuse and one-off component documentation rules.
+
 ## 0.2.0
 
 - Added Claude Code plugin manifest support through `.claude-plugin/plugin.json`.

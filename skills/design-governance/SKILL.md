@@ -34,7 +34,29 @@ If the user has not clearly specified design direction, follow this flow before 
 - Animation rules
 - Accessibility
 - Component standards
+- Component reuse rules
+- Component pattern registry
 - Prohibited implementation patterns
+
+## Component Pattern Governance
+
+When UI work introduces or changes a component, enforce this flow:
+
+1. Check `docs/DESIGN.md` and the existing component directory before creating a new component.
+2. Reuse or extend an existing component when it covers roughly 70-80% of the needed behavior.
+3. Create a new component only when reuse would make the existing component unclear, brittle, or over-generalized.
+4. If the new component is reusable across screens, update the `Component Patterns` section in `docs/DESIGN.md` during the same change.
+5. If the new component is intentionally one-off, record why in the related spec or plan instead of adding it to `docs/DESIGN.md`.
+
+`Component Patterns` entries should be concrete enough for future agents to reuse without reading the component implementation first:
+
+- Use when
+- Do not use when
+- Reuse path
+- Variants
+- Accessibility or interaction notes
+
+Do not add every component to `docs/DESIGN.md`. Only document stable reusable patterns or important prohibitions.
 
 ## Boundary
 
@@ -53,3 +75,5 @@ Cross-reference them when useful, but keep the source-of-truth boundary clear.
 - Prefer concrete implementation rules over abstract taste statements.
 - Reference `docs/assets/` when visuals, screenshots, or brand assets are needed.
 - Do not invent a visual system when repository evidence and user intent are insufficient.
+- Before adding UI components, search for reusable local components and documented patterns.
+- Keep `docs/DESIGN.md` aligned when a reusable component pattern becomes part of the system.

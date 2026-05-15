@@ -9,6 +9,7 @@ Use OpenArc when this repository needs lightweight AI-native governance, source-
 3. Keep changes small, reviewable, and reversible.
 4. Create missing governance files only when no suitable source already exists.
 5. Prefer `docs/PRD.md`, `docs/DESIGN.md`, `docs/BRAND.md`, `docs/specs/`, `docs/plans/`, `docs/tasks/`, `docs/CHANGELOG_AI.md`, and `docs/archive/` for durable project context.
+6. For UI work, check `docs/DESIGN.md` and existing components before creating a new component.
 
 ## OpenArc Tasks
 
@@ -18,6 +19,8 @@ Use OpenArc when this repository needs lightweight AI-native governance, source-
 - For non-trivial changes, create or update a spec and implementation plan before coding.
 - For version changes, use semantic versioning: patch for fixes/docs, minor for backward-compatible additions, major for breaking governance or API/schema changes.
 - For migration, inventory first and avoid moving, renaming, deleting, or archiving files without confirmation.
+- For reusable UI components, update `docs/DESIGN.md` with a Component Patterns entry in the same change.
+- For one-off UI components, document the reason in the related spec or plan instead of adding noise to `docs/DESIGN.md`.
 
 ## Helper
 

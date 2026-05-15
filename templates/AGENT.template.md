@@ -31,6 +31,8 @@ Rarely read:
 - Prefer minimal changes.
 - Reuse existing systems.
 - Avoid duplicate abstractions.
+- For UI work, check `docs/DESIGN.md` and existing components before creating a new component.
+- Add reusable component patterns to `docs/DESIGN.md`; keep one-off component rationale in the related spec or plan.
 - Keep diffs reviewable.
 - Update specs after implementation.
 - Avoid random temporary files.

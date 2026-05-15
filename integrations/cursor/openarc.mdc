@@ -16,6 +16,9 @@ When the user asks to use OpenArc, scan the repository first and choose the smal
 - Do not move, rename, delete, or archive files without confirmation.
 - For non-trivial implementation, create or update a spec and plan before coding.
 - For release or packaging work, classify version impact with semantic versioning and update the changelog.
+- For UI work, check `docs/DESIGN.md` and existing components before creating a new component.
+- For reusable components, update `docs/DESIGN.md` with a Component Patterns entry in the same change.
+- For one-off components, document the reason in the related spec or plan.
 
 ## Governance Targets
 
