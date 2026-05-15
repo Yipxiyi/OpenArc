@@ -11,10 +11,16 @@ from typing import Any
 
 REQUIRED_PLUGIN_FILES = [
     ".codex-plugin/plugin.json",
+    ".claude-plugin/plugin.json",
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
+]
+
+REQUIRED_INTEGRATION_FILES = [
+    "integrations/cursor/AGENTS.md",
+    "integrations/cursor/openarc.mdc",
 ]
 
 REQUIRED_TEMPLATES = [
@@ -94,6 +100,7 @@ def parse_skill_frontmatter(path: Path) -> dict[str, str]:
 def doctor(plugin_root: Path) -> int:
     failures: list[str] = []
     warnings: list[str] = []
+    manifest: dict[str, Any] = {}
 
     for rel_path in REQUIRED_PLUGIN_FILES:
         if not rel_exists(plugin_root, rel_path):
@@ -113,6 +120,21 @@ def doctor(plugin_root: Path) -> int:
             if manifest.get("skills") != "./skills/":
                 failures.append("plugin.json skills should be ./skills/")
             warnings.extend(find_manifest_placeholders(manifest))
+
+    claude_manifest_path = plugin_root / ".claude-plugin" / "plugin.json"
+    if claude_manifest_path.exists():
+        try:
+            claude_manifest = load_json(claude_manifest_path)
+        except Exception as exc:  # noqa: BLE001 - command-line diagnostic
+            failures.append(f"invalid .claude-plugin/plugin.json: {exc}")
+        else:
+            if claude_manifest.get("name") != plugin_root.name:
+                failures.append(".claude-plugin/plugin.json name must match plugin folder name")
+            if not claude_manifest.get("version"):
+                failures.append(".claude-plugin/plugin.json must include version")
+            if claude_manifest.get("version") != manifest.get("version"):
+                failures.append("Claude and Codex plugin manifest versions must match")
+            warnings.extend(find_manifest_placeholders(claude_manifest))
 
     skills_root = plugin_root / "skills"
     if not skills_root.exists():
@@ -135,6 +157,10 @@ def doctor(plugin_root: Path) -> int:
     for template in REQUIRED_TEMPLATES:
         if not rel_exists(plugin_root, f"templates/{template}"):
             failures.append(f"missing template: {template}")
+
+    for rel_path in REQUIRED_INTEGRATION_FILES:
+        if not rel_exists(plugin_root, rel_path):
+            failures.append(f"missing integration file: {rel_path}")
 
     if failures:
         print("OpenArc doctor: FAIL")

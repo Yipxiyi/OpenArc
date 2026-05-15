@@ -12,7 +12,9 @@
 <p align="center">
   <img alt="OpenArc" src="https://img.shields.io/badge/OpenArc-AI%20governance-1685d9?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
-  <img alt="Version 0.1.3" src="https://img.shields.io/badge/version-0.1.3-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-7c3aed?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Cursor rules" src="https://img.shields.io/badge/Cursor-rules-111827?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.2.0" src="https://img.shields.io/badge/version-0.2.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
 </p>
 
@@ -120,15 +122,67 @@ Restart Codex after registering the plugin. Then try:
 Use OpenArc here.
 ```
 
+## Install In Claude Code
+
+OpenArc includes a Claude Code plugin manifest at `.claude-plugin/plugin.json` and reuses the same `skills/` directory.
+
+For local testing from a repository checkout:
+
+```bash
+claude --plugin-dir ./plugins/openarc
+```
+
+For a standalone package copied to `~/plugins/openarc`:
+
+```bash
+claude --plugin-dir ~/plugins/openarc
+```
+
+Then try the namespaced entry skill:
+
+```text
+/openarc:openarc
+```
+
+If you distribute OpenArc through a Claude Code plugin marketplace later, install it with Claude Code's `/plugin` flow and restart Claude Code after enabling the plugin.
+
+## Install In Cursor
+
+Cursor does not install Codex or Claude Code plugins directly. Use the OpenArc Cursor adapter files instead.
+
+For the simple root-instruction path:
+
+```bash
+cp plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
+```
+
+For Cursor Project Rules:
+
+```bash
+mkdir -p .cursor/rules
+cp plugins/openarc/integrations/cursor/openarc.mdc .cursor/rules/openarc.mdc
+```
+
+Then ask Cursor Agent:
+
+```text
+Use OpenArc here.
+```
+
+Use `AGENTS.md` for a single simple project-wide instruction file. Use `.cursor/rules/openarc.mdc` when you want the rule to live with other Cursor project rules.
+
 ## Plugin Layout
 
 ```txt
 plugins/openarc/
   .codex-plugin/
     plugin.json
+  .claude-plugin/
+    plugin.json
   skills/
   templates/
   examples/
+  integrations/
   assets/
   scripts/
   README.md
@@ -137,7 +191,7 @@ plugins/openarc/
   LICENSE
 ```
 
-The plugin manifest lives at `.codex-plugin/plugin.json`. Skills live under `skills/`, and reusable document scaffolds live under `templates/`.
+The Codex plugin manifest lives at `.codex-plugin/plugin.json`. The Claude Code plugin manifest lives at `.claude-plugin/plugin.json`. Skills live under `skills/`, Cursor adapters live under `integrations/cursor/`, and reusable document scaffolds live under `templates/`.
 
 ## Skill Map
 
@@ -377,15 +431,67 @@ python3 ~/plugins/openarc/scripts/openarc.py doctor ~/plugins/openarc
 Use OpenArc here.
 ```
 
+## 在 Claude Code 中安装
+
+OpenArc 已包含 Claude Code 插件 manifest：`.claude-plugin/plugin.json`，并复用同一套 `skills/` 目录。
+
+从仓库 checkout 本地测试：
+
+```bash
+claude --plugin-dir ./plugins/openarc
+```
+
+如果已复制为独立包 `~/plugins/openarc`：
+
+```bash
+claude --plugin-dir ~/plugins/openarc
+```
+
+然后尝试带命名空间的入口 skill：
+
+```text
+/openarc:openarc
+```
+
+如果之后通过 Claude Code plugin marketplace 分发，使用 Claude Code 的 `/plugin` 流程安装，启用后重启 Claude Code。
+
+## 在 Cursor 中安装
+
+Cursor 不能直接安装 Codex 或 Claude Code 插件。OpenArc 提供 Cursor 适配文件。
+
+简单项目级指令方式：
+
+```bash
+cp plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
+```
+
+Cursor Project Rules 方式：
+
+```bash
+mkdir -p .cursor/rules
+cp plugins/openarc/integrations/cursor/openarc.mdc .cursor/rules/openarc.mdc
+```
+
+然后在 Cursor Agent 中输入：
+
+```text
+Use OpenArc here.
+```
+
+如果只需要一个项目级说明文件，用 `AGENTS.md`。如果项目已有 Cursor rules，使用 `.cursor/rules/openarc.mdc` 更合适。
+
 ## 插件结构
 
 ```txt
 plugins/openarc/
   .codex-plugin/
     plugin.json
+  .claude-plugin/
+    plugin.json
   skills/
   templates/
   examples/
+  integrations/
   assets/
   scripts/
   README.md
@@ -394,7 +500,7 @@ plugins/openarc/
   LICENSE
 ```
 
-插件 manifest 位于 `.codex-plugin/plugin.json`。Skills 位于 `skills/`，可复用文档模板位于 `templates/`。
+Codex 插件 manifest 位于 `.codex-plugin/plugin.json`。Claude Code 插件 manifest 位于 `.claude-plugin/plugin.json`。Skills 位于 `skills/`，Cursor 适配文件位于 `integrations/cursor/`，可复用文档模板位于 `templates/`。
 
 ## Skill 列表
 

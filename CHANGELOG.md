@@ -6,6 +6,13 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.2.0
+
+- Added Claude Code plugin manifest support through `.claude-plugin/plugin.json`.
+- Added Cursor adapter files under `integrations/cursor/` for `AGENTS.md` and `.cursor/rules/openarc.mdc` installation paths.
+- Updated README with Claude Code and Cursor installation guidance.
+- Expanded `openarc.py doctor` to validate Claude Code manifest parity and Cursor adapter files.
+
 ## 0.1.3
 
 - Fixed repository scans so `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported as optional public maintenance files instead of baseline governance gaps.

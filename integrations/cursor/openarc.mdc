@@ -1,0 +1,36 @@
+---
+description: Use OpenArc for lightweight AI-native repository governance, source-of-truth discovery, specs, plans, migrations, and release/version guidance.
+alwaysApply: false
+---
+
+# OpenArc
+
+When the user asks to use OpenArc, scan the repository first and choose the smallest workflow that handles the request.
+
+## Operating Rules
+
+- Preserve existing repository conventions and source-of-truth files.
+- Keep edits small, reviewable, and reversible.
+- Prefer patching existing docs over replacing them.
+- Ask only for material unknowns.
+- Do not move, rename, delete, or archive files without confirmation.
+- For non-trivial implementation, create or update a spec and plan before coding.
+- For release or packaging work, classify version impact with semantic versioning and update the changelog.
+
+## Governance Targets
+
+- `AGENT.md` or `AGENTS.md`
+- `docs/PRD.md`
+- `docs/DESIGN.md`
+- `docs/BRAND.md`
+- `docs/specs/*.md`
+- `docs/plans/*.md`
+- `docs/tasks/*.md`
+- `docs/CHANGELOG_AI.md`
+- `docs/archive/`
+
+If the helper script exists, prefer:
+
+```bash
+python3 plugins/openarc/scripts/openarc.py scan .
+```
