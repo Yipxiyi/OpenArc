@@ -6,6 +6,16 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.3.1
+
+- Refined README wording for public open-source use.
+- Clarified install commands for standalone repository roots and vendored `plugins/openarc` layouts.
+- Removed placeholder public metadata from the Codex plugin manifest.
+- Reworked README positioning into a clearer marketing-style framework overview.
+- Added comparison guidance for Superpowers and GitHub Spec Kit.
+- Added README Q&A sections in English and Chinese.
+- Rephrased workflow sections to describe OpenArc behavior instead of giving reader-facing commands to agents.
+
 ## 0.3.0
 
 - Added component pattern governance rules to `design-governance` and `implementation-workflow`.

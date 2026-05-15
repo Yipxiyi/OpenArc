@@ -14,7 +14,7 @@
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-7c3aed?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Cursor rules" src="https://img.shields.io/badge/Cursor-rules-111827?style=for-the-badge&labelColor=4a4a4a">
-  <img alt="Version 0.3.0" src="https://img.shields.io/badge/version-0.3.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.3.1" src="https://img.shields.io/badge/version-0.3.1-84cc16?style=for-the-badge&labelColor=4a4a4a">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
 </p>
 
@@ -26,46 +26,98 @@
 
 ## English
 
-OpenArc is an AI-native operational foundation for vibe-coded projects.
+OpenArc is a governance framework for repositories built with AI coding agents.
 
-It helps developers initialize and sustain repositories where coding agents remain the primary implementation driver over time. OpenArc is not a replacement for Codex, Claude Code, OpenClaw, Cursor, or future AI coding runtimes. It gives those agents a lightweight repository memory and governance layer.
+It turns a fast-moving vibe-coded project into a repository that agents can understand, extend, and maintain over time. Instead of relying on long chat history or tribal knowledge, OpenArc gives the repo its own lightweight operating system: source-of-truth docs, specs, plans, design rules, release guidance, and recent AI change memory.
 
-## What OpenArc Solves
+OpenArc is not another coding agent. It is the project layer that helps Codex, Claude Code, Cursor, and other tools work from the same map.
 
-- Architectural drift
-- Inconsistent documentation
-- Context fragmentation
-- Unstable AI iteration
-- Repository chaos
-- Weak implementation traceability
-- Oversized AI context from old project history
+## Why OpenArc
 
-## What OpenArc Enables
+AI can move fast, but repositories drift when intent only lives in prompts.
 
-- Sustainable AI-driven development
-- Long-term repository continuity
-- Structured vibe coding
-- Scalable AI collaboration
-- Spec-driven iteration
-- Lightweight governance
-- Safer migration of existing workspaces
-- Recent AI change memory with archive-based history
+OpenArc is built for teams and solo builders who want AI-assisted development without losing:
 
-## Design Principles
+- product intent
+- architectural direction
+- design consistency
+- implementation traceability
+- release discipline
+- reusable project memory
+- context efficiency across long-running work
 
-- Lightweight over bureaucratic
-- Patch-friendly over rewrite-heavy
-- Repository-aware over framework-specific
-- AI-first over human-only documentation
-- Explicit source of truth over scattered intent
-- Long-term maintainability over one-off prompting
-- Small active context, preserved historical traceability
+## How the Framework Works
+
+OpenArc gives a repository a small set of durable coordination surfaces:
+
+| Layer | Purpose |
+| --- | --- |
+| Repository guide | Tells agents how to work in this repo and where source-of-truth docs live. |
+| Product, design, and brand docs | Preserve product intent, UI implementation rules, and communication style. |
+| Specs, plans, and tasks | Turn vague requests into scoped, reviewable implementation work. |
+| Component pattern governance | Helps agents reuse UI patterns instead of creating duplicate components. |
+| Change memory and archive | Keeps recent AI work visible while moving older context out of the active path. |
+| Release and version guidance | Keeps user-visible changes aligned with semantic versioning and changelog hygiene. |
+
+## Core Capabilities
+
+- Initialize governance for a new or existing repo.
+- Audit an AI-built workspace for missing structure and drift.
+- Create PRDs, specs, plans, tasks, and design guidance with a consistent workflow.
+- Preserve reusable component patterns in `docs/DESIGN.md`.
+- Migrate existing projects without destructive rewrites.
+- Keep recent AI-assisted changes traceable through `docs/CHANGELOG_AI.md`.
+- Package the same framework for Codex, Claude Code, and Cursor-based workflows.
+
+## Who It Is For
+
+OpenArc is useful when:
+
+- AI agents are a primary implementation path.
+- A project is growing beyond one-off prompts.
+- Multiple agents, tools, or sessions need consistent context.
+- Product, design, and architecture decisions need to survive across iterations.
+- You want structure without adopting a heavyweight process framework.
+
+It is intentionally lightweight: the goal is to make the next AI-assisted change easier, not turn a small project into a documentation program.
+
+## How OpenArc Compares
+
+OpenArc sits beside agent workflow tools and spec-first toolkits. It focuses on the repository layer: the durable structure that survives across agents, sessions, and implementation cycles.
+
+| Project | Primary Focus | Best At | Where OpenArc Is Different |
+| --- | --- | --- | --- |
+| [Superpowers](https://github.com/obra/superpowers) | Agent development methodology | Brainstorming, planning, TDD, debugging, code review, subagent workflows, and finish-the-branch discipline. | OpenArc is not mainly about single-session agent behavior. It gives the repository a persistent governance model: PRD, design, brand, specs, plans, component patterns, change memory, archive policy, migration, and release guidance. |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | Spec-Driven Development toolkit | A strong Spec -> Plan -> Tasks -> Implement workflow, CLI setup, templates, checklists, extensions, presets, and broad agent integrations. | OpenArc covers more than the feature-spec pipeline. It treats the repo as a long-running AI collaboration surface, including product/design/brand governance, reusable component rules, AI change memory, archive hygiene, migration, and release/version workflows. |
+| OpenArc | Repository governance for AI-built projects | Making an AI-assisted repo understandable, repeatable, and maintainable across tools and time. | OpenArc is deliberately small and repo-native. It can work with Superpowers for agent discipline or Spec Kit for spec-driven execution, while keeping the broader repository memory and governance layer intact. |
+
+Use OpenArc when you want the project itself to stay coherent, not just the next coding session or the next feature spec.
+
+## Q&A
+
+**Is OpenArc a replacement for Superpowers or Spec Kit?**  
+No. Superpowers improves agent behavior during development. Spec Kit provides a spec-driven implementation workflow. OpenArc gives the repository a persistent governance and memory layer. They can be used together.
+
+**Why use OpenArc if Spec Kit already has specs, plans, and tasks?**  
+Spec Kit is excellent when the center of gravity is the feature delivery pipeline. OpenArc keeps that pipeline connected to broader repo governance: product intent, design rules, brand language, component reuse, change memory, migration policy, and release/version discipline.
+
+**Why use OpenArc if Superpowers already guides the agent?**  
+Superpowers is about agent execution discipline. OpenArc is about durable repository memory. If you use both, Superpowers can drive disciplined execution while OpenArc provides the project map.
+
+**Does OpenArc force a heavy process?**  
+No. The default bias is small, patch-friendly, and incremental. Add only the governance surfaces that make the next AI-assisted change safer.
+
+**Does OpenArc automatically update docs?**  
+No background automation is assumed. OpenArc defines explicit rules for agents: inspect existing docs, update relevant source-of-truth files, and keep reusable patterns in the right place.
+
+**Can OpenArc be added to an existing repo?**  
+Yes. The migration workflow is conservative: inventory first, preserve existing conventions, patch in place, and avoid destructive rewrites.
 
 ## Quick Start
 
-Use OpenArc when a repository needs structure before or during AI-driven implementation.
+Best practice: install OpenArc before starting a new project. Let OpenArc initialize the repository framework first, then begin product and implementation work on top of that structure.
 
-Common prompts:
+Ask your coding agent to start with OpenArc:
 
 ```text
 Use OpenArc here.
@@ -76,17 +128,30 @@ Migrate this workspace to OpenArc conventions.
 Review this repo for governance drift.
 ```
 
-If you have the plugin files checked out locally, the fastest first pass is:
+From this repository or an unpacked OpenArc package, run:
+
+```bash
+python3 scripts/openarc.py scan <repo-root>
+```
+
+If OpenArc is vendored under another repository at `plugins/openarc`, run:
 
 ```bash
 python3 plugins/openarc/scripts/openarc.py scan .
 ```
 
-## Install In Codex
+## Install in Codex
 
-For a local Codex install, place the plugin under `~/plugins/openarc` and register it in `~/.agents/plugins/marketplace.json`.
+For a local Codex install, copy the plugin to `~/plugins/openarc` and register it in `~/.agents/plugins/marketplace.json`.
 
-From a repository checkout:
+From the OpenArc repository root:
+
+```bash
+mkdir -p ~/plugins
+cp -R . ~/plugins/openarc
+```
+
+From a monorepo or vendored checkout where OpenArc lives at `plugins/openarc`:
 
 ```bash
 mkdir -p ~/plugins
@@ -122,11 +187,17 @@ Restart Codex after registering the plugin. Then try:
 Use OpenArc here.
 ```
 
-## Install In Claude Code
+## Install in Claude Code
 
 OpenArc includes a Claude Code plugin manifest at `.claude-plugin/plugin.json` and reuses the same `skills/` directory.
 
-For local testing from a repository checkout:
+From the OpenArc repository root:
+
+```bash
+claude --plugin-dir .
+```
+
+From a monorepo or vendored checkout where OpenArc lives at `plugins/openarc`:
 
 ```bash
 claude --plugin-dir ./plugins/openarc
@@ -144,19 +215,32 @@ Then try the namespaced entry skill:
 /openarc:openarc
 ```
 
-If you distribute OpenArc through a Claude Code plugin marketplace later, install it with Claude Code's `/plugin` flow and restart Claude Code after enabling the plugin.
+If OpenArc is published through a Claude Code plugin source, install it with Claude Code's `/plugin` flow and restart Claude Code after enabling the plugin.
 
-## Install In Cursor
+## Install in Cursor
 
 Cursor does not install Codex or Claude Code plugins directly. Use the OpenArc Cursor adapter files instead.
 
-For the simple root-instruction path:
+From the OpenArc repository root, copy the root-instruction adapter into the target project:
+
+```bash
+cp integrations/cursor/AGENTS.md <target-repo>/AGENTS.md
+```
+
+If OpenArc is vendored under the target project at `plugins/openarc`:
 
 ```bash
 cp plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
 ```
 
-For Cursor Project Rules:
+For Cursor Project Rules from the OpenArc repository root:
+
+```bash
+mkdir -p <target-repo>/.cursor/rules
+cp integrations/cursor/openarc.mdc <target-repo>/.cursor/rules/openarc.mdc
+```
+
+From a vendored checkout:
 
 ```bash
 mkdir -p .cursor/rules
@@ -169,7 +253,7 @@ Then ask Cursor Agent:
 Use OpenArc here.
 ```
 
-Use `AGENTS.md` for a single simple project-wide instruction file. Use `.cursor/rules/openarc.mdc` when you want the rule to live with other Cursor project rules.
+Use `AGENTS.md` for a single project-wide instruction file. Use `.cursor/rules/openarc.mdc` when the target repository already manages Cursor project rules.
 
 ## Plugin Layout
 
@@ -193,44 +277,44 @@ plugins/openarc/
 
 The Codex plugin manifest lives at `.codex-plugin/plugin.json`. The Claude Code plugin manifest lives at `.claude-plugin/plugin.json`. Skills live under `skills/`, Cursor adapters live under `integrations/cursor/`, and reusable document scaffolds live under `templates/`.
 
-## Skill Map
+## What Is Included
 
-OpenArc is split into focused skills so agents only load the guidance needed for the current task:
+OpenArc is packaged as focused skills, templates, examples, and lightweight adapters. Each skill covers one governance job, so agents can load the right guidance without pulling the whole framework into context.
 
-| Skill | Use When |
+| Skill | What It Provides |
 | --- | --- |
-| `openarc` | Choosing the right OpenArc workflow or handling a general "use OpenArc" request. |
-| `repository-governance` | Scanning a repo, finding source-of-truth docs, and patching or creating the project agent guide. |
-| `product-governance` | Creating or maintaining `docs/PRD.md` through a fixed clarification flow. |
-| `spec-workflow` | Creating and maintaining versioned feature specs. |
-| `planning-engine` | Creating lightweight implementation plans before coding. |
-| `design-governance` | Maintaining implementation-facing design rules in `docs/DESIGN.md`. |
-| `brand-governance` | Maintaining identity and communication rules in `docs/BRAND.md`. |
-| `assets-governance` | Organizing assets under `docs/assets/`. |
-| `implementation-workflow` | Guiding incremental implementation, validation, and documentation updates. |
-| `version-governance` | Classifying requested changes as patch, minor, or major and proposing a version for confirmation. |
-| `release-workflow` | Cutting or merging branches, committing, opening PRs, and preparing release notes. |
-| `workspace-migration` | Migrating existing workspaces into OpenArc conventions without destructive rewrites. |
-| `open-source-maintenance` | Preparing the plugin or a governed repo for public open-source maintenance. |
-| `change-archive-governance` | Maintaining `docs/CHANGELOG_AI.md`, `docs/archive/`, and context-budget-aware historical memory. |
+| `openarc` | Entry routing for general OpenArc requests. |
+| `repository-governance` | Repository scan, source-of-truth discovery, and agent guide setup. |
+| `product-governance` | PRD creation and product-intent clarification. |
+| `spec-workflow` | Versioned feature specs for non-trivial changes. |
+| `planning-engine` | Lightweight implementation plans before coding. |
+| `design-governance` | UI implementation rules, component standards, and design consistency. |
+| `brand-governance` | Product voice, naming, identity, and communication style. |
+| `assets-governance` | Asset organization under `docs/assets/`. |
+| `implementation-workflow` | Incremental implementation, validation, and documentation sync. |
+| `version-governance` | Semantic version classification and release impact guidance. |
+| `release-workflow` | Branch, commit, PR, and release-note preparation. |
+| `workspace-migration` | Conservative migration of existing workspaces into OpenArc conventions. |
+| `open-source-maintenance` | Public README, contribution, license, and changelog readiness. |
+| `change-archive-governance` | AI change memory, archive policy, and context-budget control. |
 
-## Component Pattern Governance
+## Design System Continuity
 
-OpenArc does not automatically rewrite design rules in the background. It makes component reuse an explicit agent workflow rule.
+OpenArc helps teams avoid the common "new request, new component" failure mode in AI-built interfaces.
 
-For UI work, agents should:
+The design governance layer gives UI work a reusable-component loop:
 
-- check `docs/DESIGN.md` and existing components before creating a new component
-- reuse or extend an existing component when it covers roughly 70-80% of the use case
-- create a new component only when reuse would make the old component unclear, brittle, or over-generalized
-- add reusable component patterns to `docs/DESIGN.md` in the same change
-- keep one-off component rationale in the related spec or plan instead of adding noise to `docs/DESIGN.md`
+- existing design rules and components are checked before a new component is introduced
+- components that already cover roughly 70-80% of the use case are reused or extended
+- new components are reserved for cases where reuse would make the existing component unclear, brittle, or over-generalized
+- reusable component patterns are recorded in `docs/DESIGN.md`
+- one-off component decisions stay with the related spec or plan instead of bloating the design guide
 
-`docs/DESIGN.md` should document stable reusable patterns, not every component in the codebase.
+`docs/DESIGN.md` is meant to document stable reusable patterns, not every component in the codebase.
 
-## Repository Foundation
+## Repository Memory Model
 
-OpenArc checks these governance files when relevant:
+OpenArc uses ordinary repository files as durable memory. Agents read only what is relevant, but the important project context stays versioned with the code:
 
 - `AGENT.md` or `AGENTS.md`
 - `docs/PRD.md`
@@ -243,13 +327,13 @@ OpenArc checks these governance files when relevant:
 - `docs/CHANGELOG_AI.md`
 - `docs/archive/`
 
-For public or open-source repositories, OpenArc may also inspect release and maintenance files:
+For public or open-source repositories, OpenArc can also inspect release and maintenance files:
 
 - `CHANGELOG.md`
 - `CONTRIBUTING.md`
 - `LICENSE`
 
-Existing files always win. OpenArc should preserve intent and patch carefully instead of rewriting working repository conventions.
+Existing files always win. OpenArc favors preserving intent and patching carefully over replacing working conventions.
 
 ## Change Memory and Archive Governance
 
@@ -261,12 +345,12 @@ OpenArc treats AI-assisted development as a long-running collaboration.
 
 This keeps repositories traceable while protecting context budgets.
 
-Recommended retention:
+Recommended retention model:
 
-- keep only the last 10-20 AI-assisted entries in `docs/CHANGELOG_AI.md`
-- move older entries to `docs/archive/`
-- never delete historical context just to reduce context size
-- read archived material only for regressions, architectural history, or prior AI decision investigation
+- `docs/CHANGELOG_AI.md` stays focused on the latest 10-20 AI-assisted entries
+- older entries move into `docs/archive/`
+- historical context remains available instead of being deleted for context-budget reasons
+- archived material is reserved for regressions, architectural history, or prior AI decision investigation
 
 ## Helper Scripts
 
@@ -278,23 +362,22 @@ python3 plugins/openarc/scripts/openarc.py scan <repo-root> --format json
 python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 ```
 
-Use `scan` to identify missing governance files and the next recommended OpenArc workflow. Public maintenance files such as `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported separately as optional public files, not as baseline governance gaps for every workspace.
+`scan` identifies missing governance files and recommends the next OpenArc workflow. Public maintenance files such as `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported separately as optional public files, not as baseline governance gaps for every workspace.
 
-Use `doctor` before publishing plugin changes. It checks the manifest, required public files, required templates, and skill frontmatter.
+`doctor` validates the plugin package before publication by checking manifests, required public files, required templates, integration adapters, and skill frontmatter.
 
-## Default Clarification Flow
+## Clarification Flow
 
-When creating `docs/PRD.md`, `docs/DESIGN.md`, or `docs/BRAND.md`, do not fill unclear sections with generic guesses.
+OpenArc treats product, design, and brand documents as source-of-truth files. The clarification flow keeps them grounded in repository evidence and confirmed decisions instead of vague filler.
 
-Use this fixed flow:
+For `docs/PRD.md`, `docs/DESIGN.md`, and `docs/BRAND.md`, the workflow is:
 
 1. Discover existing repo signals: README, package metadata, app screens, docs, copy, design tokens, assets, and recent specs.
-2. Draft a compact assumptions table with knowns, unknowns, contradictions, and risky guesses.
-3. Ask the user focused questions only for material gaps.
-4. Convert confirmed answers into the target document.
-5. Review contradictions across PRD, DESIGN, BRAND, specs, and assets.
-6. Ask for confirmation on remaining ambiguous decisions.
-7. Write or patch the document only after the core intent is clear.
+2. Separate known facts, unknowns, contradictions, and risky assumptions.
+3. Resolve material gaps with focused clarification.
+4. Convert confirmed decisions into the target document.
+5. Check for contradictions across PRD, DESIGN, BRAND, specs, and assets.
+6. Leave remaining ambiguity visible instead of hiding it in generic prose.
 
 ## Versioning Policy
 
@@ -304,7 +387,7 @@ OpenArc uses semantic versioning by default:
 - Minor: new backward-compatible features, new docs sections, new templates, new optional workflows.
 - Major: breaking changes, governance model changes, incompatible API/schema changes, renamed public commands, removed behavior.
 
-For user-requested changes, agents should classify the change, propose the next version, and ask the user to confirm the version before release work.
+For release-visible changes, OpenArc records the version impact before release work begins.
 
 ## Migration Policy
 
@@ -349,46 +432,98 @@ OpenArc is released under the MIT License. See [LICENSE](LICENSE).
 
 ## 中文说明
 
-OpenArc 是给 vibe coding 项目使用的 AI 原生治理基础层。
+OpenArc 是面向 AI 编程仓库的治理框架。
 
-它帮助开发者初始化并长期维护主要由 AI 编程助手参与实现的仓库。OpenArc 不是 Codex、Claude Code、OpenClaw、Cursor 这类 AI 编程工具的替代品；它补的是仓库侧的记忆、规范和协作治理能力。
+它把快速推进的 vibe-coded 项目，变成 agent 能长期理解、扩展和维护的仓库。你不需要把产品意图、架构选择和设计规则都塞在聊天记录里；OpenArc 把这些上下文沉淀为仓库自己的轻量操作系统：事实来源文档、规格、计划、设计规则、发布指引和近期 AI 变更记忆。
 
-## OpenArc 解决什么问题
+OpenArc 不是另一个编程 agent。它是项目层框架，让 Codex、Claude Code、Cursor 和其他 AI 编程工具从同一张地图出发。
 
-- 架构漂移
-- 文档不一致
-- 上下文碎片化
-- AI 迭代不稳定
-- 仓库持续混乱
-- 实现过程缺少可追溯性
-- 旧历史挤占 AI 上下文预算
+## 为什么需要 OpenArc
 
-## OpenArc 带来什么能力
+AI 可以很快写代码，但如果意图只存在于提示词里，仓库会很快漂移。
 
-- 可持续的 AI 驱动开发
-- 长期仓库连续性
-- 结构化 vibe coding
-- 可扩展的 AI 协作
-- 围绕规格文档推进迭代
-- 轻量治理
-- 更安全的已有工作区迁移
-- 近期 AI 变更记忆与历史归档
+OpenArc 适合希望继续保持 AI 开发速度，同时不丢掉这些东西的项目：
 
-## 设计原则
+- 产品意图
+- 架构方向
+- 设计一致性
+- 实现可追溯性
+- 发布纪律
+- 可复用的项目记忆
+- 长期迭代中的上下文效率
 
-- 轻量优先，不做官僚流程
-- patch 优先，不做重写导向
-- 仓库感知优先，不绑定具体框架
-- 优先面向 AI 协作，而不是只服务人工阅读
-- 明确事实来源，减少散落意图
-- 长期可维护优先，不依赖一次性提示词
-- 活跃上下文尽量小，历史信息仍可追溯
+## 框架如何工作
+
+OpenArc 给仓库提供一组稳定、轻量的协作界面：
+
+| 层级 | 作用 |
+| --- | --- |
+| 仓库 agent guide | 告诉 agent 如何在这个仓库工作，以及事实来源文档在哪里。 |
+| 产品、设计、品牌文档 | 保留产品意图、UI 实现规则和对外表达风格。 |
+| specs、plans、tasks | 把模糊需求变成有边界、可审阅的实现工作。 |
+| 组件模式治理 | 帮助 agent 复用 UI 模式，而不是重复造相似组件。 |
+| 变更记忆和归档 | 让近期 AI 工作保持可见，同时把旧上下文移出活跃路径。 |
+| 发布和版本指引 | 让用户可见变更、语义化版本和 changelog 保持一致。 |
+
+## 核心能力
+
+- 为新仓库或已有仓库初始化治理结构。
+- 审计 AI 构建的工作区，识别结构缺口和漂移。
+- 用一致流程创建 PRD、spec、plan、task 和设计规范。
+- 将可复用组件模式沉淀到 `docs/DESIGN.md`。
+- 在不破坏已有结构的前提下迁移项目。
+- 通过 `docs/CHANGELOG_AI.md` 保留近期 AI 参与变更。
+- 同一套框架可用于 Codex、Claude Code 和 Cursor 工作流。
+
+## 适用对象
+
+OpenArc 适合这些项目：
+
+- AI agent 是主要实现路径之一。
+- 项目已经不再只是一次性提示词实验。
+- 多个 agent、工具或会话需要稳定上下文。
+- 产品、设计和架构决策需要跨迭代保留下来。
+- 想要结构，但不想引入重型流程框架。
+
+OpenArc 刻意保持轻量：目标是让下一次 AI 辅助变更更容易，而不是把小项目变成文档工程。
+
+## OpenArc 和其他项目的区别
+
+OpenArc 和 agent 工作流工具、spec-first 工具链是并列关系。它关注的是仓库层：那些能跨 agent、跨会话、跨实现周期保留下来的长期结构。
+
+| 项目 | 核心定位 | 最擅长 | OpenArc 的差异 |
+| --- | --- | --- | --- |
+| [Superpowers](https://github.com/obra/superpowers) | Agent 开发方法论 | 脑暴、计划、TDD、系统化调试、代码评审、subagent 工作流和收尾分支纪律。 | OpenArc 的重点不是单次会话里的 agent 行为，而是给仓库提供持久治理模型：PRD、设计、品牌、specs、plans、组件模式、变更记忆、归档策略、迁移和发布指引。 |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | Spec-Driven Development 工具包 | 强规格驱动流程：Spec -> Plan -> Tasks -> Implement，配套 CLI、模板、检查清单、扩展、preset 和多 agent 集成。 | OpenArc 不只覆盖功能规格流水线。它把仓库视为长期 AI 协作界面，包含产品/设计/品牌治理、组件复用规则、AI 变更记忆、归档卫生、迁移策略和发布/版本流程。 |
+| OpenArc | AI 构建项目的仓库治理框架 | 让 AI 辅助仓库跨工具、跨时间保持可理解、可复用、可维护。 | OpenArc 刻意保持小而 repo-native。它可以和 Superpowers 一起提供 agent 执行纪律，也可以和 Spec Kit 一起推进规格驱动实现，同时保留更完整的仓库记忆和治理层。 |
+
+当你关心的不只是下一次编码会话或下一份功能 spec，而是整个项目长期保持一致时，就需要 OpenArc。
+
+## Q&A
+
+**OpenArc 是 Superpowers 或 Spec Kit 的替代品吗？**  
+不是。Superpowers 改善 agent 在开发过程中的行为，Spec Kit 提供规格驱动实现流程，OpenArc 给仓库提供持久治理和记忆层。它们可以一起使用。
+
+**Spec Kit 已经有 spec、plan、task，为什么还需要 OpenArc？**  
+Spec Kit 很适合以功能交付流水线为中心的团队。OpenArc 解决的是更宽的仓库治理问题：产品意图、设计规则、品牌语言、组件复用、变更记忆、迁移策略和发布/版本纪律。
+
+**Superpowers 已经能指导 agent，为什么还需要 OpenArc？**  
+Superpowers 关注 agent 执行纪律。OpenArc 关注持久仓库记忆。一起使用时，Superpowers 负责执行纪律，OpenArc 提供项目地图。
+
+**OpenArc 会不会变成重流程？**  
+不会。默认原则是小步、可 patch、增量治理。只引入能让下一次 AI 辅助变更更安全的结构。
+
+**OpenArc 会自动更新文档吗？**  
+不会假设后台自动化。OpenArc 提供的是清晰的维护约定：基于现有文档和代码更新事实来源文件，并把可复用模式放在正确位置。
+
+**已有项目可以接入 OpenArc 吗？**  
+可以。迁移策略是保守的：先盘点，保留已有约定，能原地 patch 就不重写，避免破坏性迁移。
 
 ## 快速开始
 
-当仓库需要在 AI 实现前或实现过程中建立结构时，使用 OpenArc。
+最佳实践：在启动新项目前先安装 OpenArc。先让 OpenArc 在 repo 工作区内搭建好治理框架，再在这个结构上开始产品和实现开发。
 
-常用提示词：
+让你的编程 agent 从 OpenArc 开始：
 
 ```text
 Use OpenArc here.
@@ -399,7 +534,13 @@ Migrate this workspace to OpenArc conventions.
 Review this repo for governance drift.
 ```
 
-如果你本地已有插件文件，最快的第一步是：
+从 OpenArc 仓库根目录或解压后的 OpenArc 包中执行：
+
+```bash
+python3 scripts/openarc.py scan <repo-root>
+```
+
+如果 OpenArc 作为目标仓库里的 `plugins/openarc` 子目录存在，则执行：
 
 ```bash
 python3 plugins/openarc/scripts/openarc.py scan .
@@ -407,9 +548,16 @@ python3 plugins/openarc/scripts/openarc.py scan .
 
 ## 在 Codex 中安装
 
-本地 Codex 安装时，将插件放到 `~/plugins/openarc`，并注册到 `~/.agents/plugins/marketplace.json`。
+本地 Codex 安装时，将插件复制到 `~/plugins/openarc`，并注册到 `~/.agents/plugins/marketplace.json`。
 
-从仓库目录执行：
+从 OpenArc 仓库根目录执行：
+
+```bash
+mkdir -p ~/plugins
+cp -R . ~/plugins/openarc
+```
+
+如果 OpenArc 位于 monorepo 或目标仓库的 `plugins/openarc`：
 
 ```bash
 mkdir -p ~/plugins
@@ -449,7 +597,13 @@ Use OpenArc here.
 
 OpenArc 已包含 Claude Code 插件 manifest：`.claude-plugin/plugin.json`，并复用同一套 `skills/` 目录。
 
-从仓库 checkout 本地测试：
+从 OpenArc 仓库根目录执行：
+
+```bash
+claude --plugin-dir .
+```
+
+如果 OpenArc 位于 monorepo 或目标仓库的 `plugins/openarc`：
 
 ```bash
 claude --plugin-dir ./plugins/openarc
@@ -467,19 +621,32 @@ claude --plugin-dir ~/plugins/openarc
 /openarc:openarc
 ```
 
-如果之后通过 Claude Code plugin marketplace 分发，使用 Claude Code 的 `/plugin` 流程安装，启用后重启 Claude Code。
+如果 OpenArc 通过 Claude Code plugin source 发布，使用 Claude Code 的 `/plugin` 流程安装，启用后重启 Claude Code。
 
 ## 在 Cursor 中安装
 
 Cursor 不能直接安装 Codex 或 Claude Code 插件。OpenArc 提供 Cursor 适配文件。
 
-简单项目级指令方式：
+从 OpenArc 仓库根目录复制项目级指令适配文件到目标仓库：
+
+```bash
+cp integrations/cursor/AGENTS.md <target-repo>/AGENTS.md
+```
+
+如果 OpenArc 位于目标仓库的 `plugins/openarc`：
 
 ```bash
 cp plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
 ```
 
-Cursor Project Rules 方式：
+从 OpenArc 仓库根目录复制 Cursor Project Rules 适配文件：
+
+```bash
+mkdir -p <target-repo>/.cursor/rules
+cp integrations/cursor/openarc.mdc <target-repo>/.cursor/rules/openarc.mdc
+```
+
+如果 OpenArc 位于目标仓库的 `plugins/openarc`：
 
 ```bash
 mkdir -p .cursor/rules
@@ -492,7 +659,7 @@ cp plugins/openarc/integrations/cursor/openarc.mdc .cursor/rules/openarc.mdc
 Use OpenArc here.
 ```
 
-如果只需要一个项目级说明文件，用 `AGENTS.md`。如果项目已有 Cursor rules，使用 `.cursor/rules/openarc.mdc` 更合适。
+如果只需要一个项目级说明文件，用 `AGENTS.md`。如果目标仓库已有 Cursor rules，使用 `.cursor/rules/openarc.mdc` 更合适。
 
 ## 插件结构
 
@@ -539,15 +706,15 @@ OpenArc 被拆分为多个职责明确的 skills，避免 agent 每次加载不�
 
 ## 组件模式治理
 
-OpenArc 不会在后台自动重写设计规范。它把组件复用变成明确的 agent 工作规则。
+OpenArc 帮助团队避免 AI 构建界面里常见的“一个新需求，一个新组件”问题。
 
-做 UI 相关工作时，agent 应该：
+设计治理层提供的是一个可复用组件循环：
 
-- 新增组件前先查 `docs/DESIGN.md` 和现有组件
-- 现有组件覆盖约 70%-80% 场景时，优先复用或扩展
-- 只有复用会让旧组件变得不清晰、脆弱或过度泛化时，才新增组件
-- 新增可复用组件时，同步把组件模式沉淀到 `docs/DESIGN.md`
-- 一次性组件不写进 `docs/DESIGN.md`，而是在相关 spec 或 plan 中说明原因
+- 新组件出现前，会先检查既有设计规则和组件
+- 已覆盖约 70%-80% 场景的组件会被复用或扩展
+- 新组件只用于复用会导致既有组件不清晰、脆弱或过度泛化的场景
+- 可复用组件模式会沉淀到 `docs/DESIGN.md`
+- 一次性组件决策保留在相关 spec 或 plan 中，避免设计指南膨胀
 
 `docs/DESIGN.md` 应记录稳定可复用模式，而不是把代码库里的每个组件都列一遍。
 
@@ -572,7 +739,7 @@ OpenArc 会在需要时检查这些治理文件：
 - `CONTRIBUTING.md`
 - `LICENSE`
 
-已有文件优先。OpenArc 应保留现有意图，并以小步修补的方式谨慎调整，而不是重写已有仓库约定。
+已有文件优先。OpenArc 倾向于保留现有意图，并以小步修补的方式调整，而不是重写已有仓库约定。
 
 ## 变更记忆与归档治理
 
@@ -584,12 +751,12 @@ OpenArc 将 AI 参与的软件开发视为长期协作。
 
 这既保留可追溯性，也保护上下文预算。
 
-推荐规则：
+推荐保留模型：
 
-- `docs/CHANGELOG_AI.md` 只保留最近 10-20 条 AI 参与的变更记录
-- 更早条目移动到 `docs/archive/`
-- 不为了减少上下文而删除历史信息
-- 只有在排查回归、追溯架构历史或理解过去 AI 决策时才读取归档
+- `docs/CHANGELOG_AI.md` 聚焦最近 10-20 条 AI 参与变更
+- 更早条目进入 `docs/archive/`
+- 历史信息保留可追溯性，而不是为了节省上下文被删除
+- 归档内容主要用于排查回归、追溯架构历史或理解过去 AI 决策
 
 ## 辅助脚本
 
@@ -603,21 +770,20 @@ python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 
 `scan` 用于识别缺失的治理文件，并给出下一步推荐流程。`CHANGELOG.md`、`CONTRIBUTING.md`、`LICENSE` 这类公开维护文件会单独作为 optional public files 汇报，不再作为所有工作区的基础治理缺口。
 
-`doctor` 用于发布插件变更前检查 manifest、公开文件、模板和 skill frontmatter。
+`doctor` 用于发布插件变更前校验 manifest、公开文件、模板、平台适配文件和 skill frontmatter。
 
-## 默认澄清流程
+## 澄清流程
 
-创建 `docs/PRD.md`、`docs/DESIGN.md` 或 `docs/BRAND.md` 时，不要用泛泛的猜测填空。
+OpenArc 将产品、设计和品牌文档视为事实来源文件。澄清流程的目标，是让这些文档基于仓库证据和已确认决策，而不是用空泛表述补齐未知信息。
 
-固定流程：
+对于 `docs/PRD.md`、`docs/DESIGN.md` 和 `docs/BRAND.md`，流程是：
 
 1. 发现仓库已有信号：README、包信息、应用界面、文档、文案、设计变量、素材和近期规格文档。
-2. 草拟一个简短假设表，区分已知、未知、冲突和高风险猜测。
-3. 只针对关键缺口问用户聚焦问题。
-4. 将已确认答案写入目标文档。
+2. 区分已知事实、未知信息、矛盾点和高风险假设。
+3. 对关键缺口进行聚焦澄清。
+4. 将已确认决策写入目标文档。
 5. 检查 PRD、DESIGN、BRAND、specs 和 assets 之间的冲突。
-6. 对仍不明确的关键决策请求确认。
-7. 核心意图明确后再创建或修订文档。
+6. 保留仍未解决的模糊点，而不是用泛泛文字掩盖。
 
 ## 版本策略
 

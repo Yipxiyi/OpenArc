@@ -1,13 +1,11 @@
 {
   "name": "openarc",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "AI-native repository initialization and governance for sustainable vibe-coded projects.",
   "author": {
-    "name": "OpenArc",
-    "email": "[TODO: contact@example.com]",
-    "url": "[TODO: https://example.com/openarc]"
+    "name": "OpenArc"
   },
-  "homepage": "[TODO: https://example.com/openarc]",
+  "homepage": "https://github.com/Yipxiyi/OpenArc",
   "repository": "https://github.com/Yipxiyi/OpenArc",
   "license": "MIT",
   "keywords": [
@@ -38,8 +36,6 @@
       "Release"
     ],
     "websiteURL": "https://github.com/Yipxiyi/OpenArc",
-    "privacyPolicyURL": "[TODO: https://example.com/privacy]",
-    "termsOfServiceURL": "[TODO: https://example.com/terms]",
     "defaultPrompt": [
       "Scan this repo with OpenArc and tell me what to do first.",
       "Create a lightweight spec and implementation plan.",
