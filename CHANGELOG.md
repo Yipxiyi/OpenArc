@@ -6,6 +6,12 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.4.0
+
+- Added profile-aware repository scans with `repo_profile`, profile-relevant `missing_files`, `all_missing_files`, grouped missing governance, and adaptive recommendations for script, library, app, plugin, docs, and unknown repositories.
+- Stopped defaulting script, CLI, automation, library, and docs-only repositories into design, brand, or assets governance unless the repo has matching signals.
+- Updated OpenArc skills, Cursor adapters, README, and agent templates so product, design, brand, and asset docs are conditional governance surfaces.
+
 ## 0.3.1
 
 - Refined README wording for public open-source use.

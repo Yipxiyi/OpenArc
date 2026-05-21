@@ -14,7 +14,7 @@
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-7c3aed?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Cursor rules" src="https://img.shields.io/badge/Cursor-rules-111827?style=for-the-badge&labelColor=4a4a4a">
-  <img alt="Version 0.3.1" src="https://img.shields.io/badge/version-0.3.1-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
 </p>
 
@@ -53,7 +53,7 @@ OpenArc gives a repository a small set of durable coordination surfaces:
 | Layer | Purpose |
 | --- | --- |
 | Repository guide | Tells agents how to work in this repo and where source-of-truth docs live. |
-| Product, design, and brand docs | Preserve product intent, UI implementation rules, and communication style. |
+| Profile-aware product, design, and brand docs | Preserve product intent, UI rules, and communication style only when the repository type needs them. |
 | Specs, plans, and tasks | Turn vague requests into scoped, reviewable implementation work. |
 | Component pattern governance | Helps agents reuse UI patterns instead of creating duplicate components. |
 | Change memory and archive | Keeps recent AI work visible while moving older context out of the active path. |
@@ -314,18 +314,25 @@ The design governance layer gives UI work a reusable-component loop:
 
 ## Repository Memory Model
 
-OpenArc uses ordinary repository files as durable memory. Agents read only what is relevant, but the important project context stays versioned with the code:
+OpenArc uses ordinary repository files as durable memory. Agents read only what is relevant, and the helper scan classifies repositories as `script`, `library`, `app`, `plugin`, `docs`, or `unknown` before recommending governance files.
+
+Common durable surfaces:
 
 - `AGENT.md` or `AGENTS.md`
-- `docs/PRD.md`
-- `docs/DESIGN.md`
-- `docs/BRAND.md`
 - `docs/specs/*.md`
 - `docs/plans/*.md`
 - `docs/tasks/*.md`
-- `docs/assets/*`
 - `docs/CHANGELOG_AI.md`
 - `docs/archive/`
+
+Conditional surfaces:
+
+- `docs/PRD.md` for product or app repositories.
+- `docs/DESIGN.md` for UI, frontend, desktop, mobile, or component work.
+- `docs/BRAND.md` for public brand, identity, marketing, naming, or copy work.
+- `docs/assets/*` when visual assets or references exist.
+
+Pure script, CLI, automation, library, and docs-only repositories do not need design or brand scaffolding by default.
 
 For public or open-source repositories, OpenArc can also inspect release and maintenance files:
 
@@ -362,15 +369,15 @@ python3 plugins/openarc/scripts/openarc.py scan <repo-root> --format json
 python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 ```
 
-`scan` identifies missing governance files and recommends the next OpenArc workflow. Public maintenance files such as `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported separately as optional public files, not as baseline governance gaps for every workspace.
+`scan` identifies the repo profile, separates core, delivery, and conditional governance gaps, and recommends the next OpenArc workflow. In JSON output, `missing_files` is profile-relevant while `all_missing_files` keeps the full known governance inventory. Public maintenance files such as `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported separately as optional public files, not as baseline governance gaps for every workspace.
 
 `doctor` validates the plugin package before publication by checking manifests, required public files, required templates, integration adapters, and skill frontmatter.
 
 ## Clarification Flow
 
-OpenArc treats product, design, and brand documents as source-of-truth files. The clarification flow keeps them grounded in repository evidence and confirmed decisions instead of vague filler.
+OpenArc treats product, design, and brand documents as conditional source-of-truth files. The clarification flow keeps them grounded in repository evidence and confirmed decisions instead of vague filler.
 
-For `docs/PRD.md`, `docs/DESIGN.md`, and `docs/BRAND.md`, the workflow is:
+When the repo profile or user request calls for `docs/PRD.md`, `docs/DESIGN.md`, or `docs/BRAND.md`, the workflow is:
 
 1. Discover existing repo signals: README, package metadata, app screens, docs, copy, design tokens, assets, and recent specs.
 2. Separate known facts, unknowns, contradictions, and risky assumptions.
@@ -459,7 +466,7 @@ OpenArc 给仓库提供一组稳定、轻量的协作界面：
 | 层级 | 作用 |
 | --- | --- |
 | 仓库 agent guide | 告诉 agent 如何在这个仓库工作，以及事实来源文档在哪里。 |
-| 产品、设计、品牌文档 | 保留产品意图、UI 实现规则和对外表达风格。 |
+| 自适应产品、设计、品牌文档 | 只在仓库类型需要时保留产品意图、UI 规则和对外表达风格。 |
 | specs、plans、tasks | 把模糊需求变成有边界、可审阅的实现工作。 |
 | 组件模式治理 | 帮助 agent 复用 UI 模式，而不是重复造相似组件。 |
 | 变更记忆和归档 | 让近期 AI 工作保持可见，同时把旧上下文移出活跃路径。 |
@@ -720,18 +727,25 @@ OpenArc 帮助团队避免 AI 构建界面里常见的“一个新需求，一�
 
 ## 仓库治理基础文件
 
-OpenArc 会在需要时检查这些治理文件：
+OpenArc 使用普通仓库文件作为持久记忆。Agent 只读取相关内容，辅助扫描会先把仓库识别为 `script`、`library`、`app`、`plugin`、`docs` 或 `unknown`，再推荐治理文件。
+
+通用持久界面：
 
 - `AGENT.md` 或 `AGENTS.md`
-- `docs/PRD.md`
-- `docs/DESIGN.md`
-- `docs/BRAND.md`
 - `docs/specs/*.md`
 - `docs/plans/*.md`
 - `docs/tasks/*.md`
-- `docs/assets/*`
 - `docs/CHANGELOG_AI.md`
 - `docs/archive/`
+
+条件界面：
+
+- `docs/PRD.md`：产品或 app 仓库需要时使用。
+- `docs/DESIGN.md`：UI、前端、桌面端、移动端或组件工作需要时使用。
+- `docs/BRAND.md`：公开品牌、身份、营销、命名或文案工作需要时使用。
+- `docs/assets/*`：存在视觉资产或参考资料时使用。
+
+纯脚本、CLI、自动化、库和文档型仓库默认不需要设计或品牌脚手架。
 
 对于公开或开源仓库，OpenArc 也可能检查发布与维护文件：
 
@@ -768,15 +782,15 @@ python3 plugins/openarc/scripts/openarc.py scan <repo-root> --format json
 python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 ```
 
-`scan` 用于识别缺失的治理文件，并给出下一步推荐流程。`CHANGELOG.md`、`CONTRIBUTING.md`、`LICENSE` 这类公开维护文件会单独作为 optional public files 汇报，不再作为所有工作区的基础治理缺口。
+`scan` 会识别 repo profile，拆分 core、delivery、conditional 治理缺口，并给出下一步推荐流程。JSON 输出中，`missing_files` 只表示 profile-relevant 缺口，`all_missing_files` 保留完整已知治理清单。`CHANGELOG.md`、`CONTRIBUTING.md`、`LICENSE` 这类公开维护文件会单独作为 optional public files 汇报，不再作为所有工作区的基础治理缺口。
 
 `doctor` 用于发布插件变更前校验 manifest、公开文件、模板、平台适配文件和 skill frontmatter。
 
 ## 澄清流程
 
-OpenArc 将产品、设计和品牌文档视为事实来源文件。澄清流程的目标，是让这些文档基于仓库证据和已确认决策，而不是用空泛表述补齐未知信息。
+OpenArc 将产品、设计和品牌文档视为条件事实来源文件。澄清流程的目标，是让这些文档基于仓库证据和已确认决策，而不是用空泛表述补齐未知信息。
 
-对于 `docs/PRD.md`、`docs/DESIGN.md` 和 `docs/BRAND.md`，流程是：
+当 repo profile 或用户请求需要 `docs/PRD.md`、`docs/DESIGN.md` 或 `docs/BRAND.md` 时，流程是：
 
 1. 发现仓库已有信号：README、包信息、应用界面、文档、文案、设计变量、素材和近期规格文档。
 2. 区分已知事实、未知信息、矛盾点和高风险假设。

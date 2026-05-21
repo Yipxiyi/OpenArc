@@ -14,11 +14,12 @@ Help agents understand repository structure, identify governance documents, pres
 ## Workflow
 
 1. Scan the repository before changing files.
-2. Detect existing conventions, docs, architecture notes, specs, plans, tasks, design files, brand files, assets, and agent guides.
-3. Identify conflicts between existing docs and requested OpenArc structure.
-4. Patch existing files when they already carry project intent.
-5. Create missing files only when no suitable existing source exists.
-6. Keep diffs small and reviewable.
+2. Detect the repository profile: `script`, `library`, `app`, `plugin`, `docs`, or `unknown`.
+3. Detect existing conventions, docs, architecture notes, specs, plans, tasks, conditional product/design/brand files, assets, and agent guides.
+4. Identify conflicts between existing docs and requested OpenArc structure.
+5. Patch existing files when they already carry project intent.
+6. Create missing files only when they are relevant to the detected profile and no suitable existing source exists.
+7. Keep diffs small and reviewable.
 
 If `scripts/openarc.py` is available, run or request:
 
@@ -44,10 +45,10 @@ Conditional read:
 - `docs/PRD.md`
 - `docs/SPEC.md`
 - `docs/ARCHITECTURE.md`
-- `docs/DESIGN.md`
-- `docs/BRAND.md`
+- `docs/DESIGN.md` for UI, frontend, desktop, mobile, or component work
+- `docs/BRAND.md` for brand, marketing, public-facing, or visual identity work
 - latest `docs/specs/*.md`
-- `docs/assets/*`
+- `docs/assets/*` when the repo has UI, screenshots, icons, brand assets, or visual references
 - `docs/CHANGELOG_AI.md`
 
 Rarely read:
@@ -81,11 +82,13 @@ The guide should cover:
 - Execution workflow
 - Validation expectations
 - Repository-specific constraints
+- Profile-specific conditional docs; for pure script repositories, prefer runbook, validation, and change-memory guidance over design or brand scaffolding.
 
 ## Hard Rules
 
 - Do not rewrite existing governance docs just to match the template.
 - Do not invent architecture facts the repository does not show.
+- Do not create product, design, brand, or assets governance for repo profiles that do not need them.
 - Do not leave temporary files or duplicate documentation trees.
 - Do not make `docs/archive/*` part of default reading.
 - Report created files, modified files, detected governance docs, conflicts, and recommended next steps.

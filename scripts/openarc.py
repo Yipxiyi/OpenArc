@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -37,18 +38,39 @@ REQUIRED_TEMPLATES = [
     "ARCHIVE_INDEX.template.md",
 ]
 
-GOVERNANCE_FILES = [
+AGENT_GUIDE_FILES = [
     "AGENT.md",
     "AGENTS.md",
+]
+
+CORE_GOVERNANCE_FILES = [
+    *AGENT_GUIDE_FILES,
+    "README.md",
     "docs/PROJECT_BRIEF.md",
     "docs/CODE_STYLE.md",
     "docs/TASKS.md",
-    "docs/PRD.md",
+    "docs/CHANGELOG_AI.md",
+]
+
+DELIVERY_GOVERNANCE_FILES = [
     "docs/SPEC.md",
     "docs/ARCHITECTURE.md",
+]
+
+PRODUCT_GOVERNANCE_FILES = [
+    "docs/PRD.md",
+]
+
+UI_BRAND_GOVERNANCE_FILES = [
     "docs/DESIGN.md",
     "docs/BRAND.md",
-    "docs/CHANGELOG_AI.md",
+]
+
+GOVERNANCE_FILES = [
+    *CORE_GOVERNANCE_FILES,
+    *PRODUCT_GOVERNANCE_FILES,
+    *DELIVERY_GOVERNANCE_FILES,
+    *UI_BRAND_GOVERNANCE_FILES,
 ]
 
 OPTIONAL_PUBLIC_FILES = [
@@ -57,18 +79,100 @@ OPTIONAL_PUBLIC_FILES = [
     "LICENSE",
 ]
 
-GOVERNANCE_DIRS = [
+DELIVERY_GOVERNANCE_DIRS = [
     "docs/specs",
     "docs/plans",
     "docs/tasks",
-    "docs/assets",
+]
+
+ARCHIVE_GOVERNANCE_DIRS = [
     "docs/archive",
+]
+
+UI_BRAND_GOVERNANCE_DIRS = [
+    "docs/assets",
     "docs/assets/brand",
     "docs/assets/icons",
     "docs/assets/illustrations",
     "docs/assets/screenshots",
     "docs/assets/references",
 ]
+
+GOVERNANCE_DIRS = [
+    *DELIVERY_GOVERNANCE_DIRS,
+    *UI_BRAND_GOVERNANCE_DIRS,
+    *ARCHIVE_GOVERNANCE_DIRS,
+]
+
+IGNORED_SCAN_DIRS = {
+    ".git",
+    ".hg",
+    ".svn",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "node_modules",
+    "target",
+    "vendor",
+}
+
+SOURCE_EXTENSIONS = {
+    ".c",
+    ".cc",
+    ".cpp",
+    ".go",
+    ".java",
+    ".js",
+    ".jsx",
+    ".kt",
+    ".m",
+    ".mm",
+    ".php",
+    ".py",
+    ".rb",
+    ".rs",
+    ".sh",
+    ".swift",
+    ".ts",
+    ".tsx",
+    ".vue",
+}
+
+SCRIPT_EXTENSIONS = {
+    ".js",
+    ".mjs",
+    ".py",
+    ".rb",
+    ".sh",
+    ".ts",
+}
+
+APP_PACKAGE_HINTS = {
+    "@angular/core",
+    "@remix-run/react",
+    "@sveltejs/kit",
+    "astro",
+    "electron",
+    "expo",
+    "next",
+    "react",
+    "react-dom",
+    "solid-js",
+    "svelte",
+    "vite",
+    "vue",
+}
+
+LIBRARY_MANIFESTS = {
+    "Cargo.toml",
+    "go.mod",
+    "package.json",
+    "Package.swift",
+    "pyproject.toml",
+    "setup.cfg",
+    "setup.py",
+}
 
 
 def rel_exists(root: Path, rel_path: str) -> bool:
@@ -194,6 +298,7 @@ def find_manifest_placeholders(manifest: dict[str, Any]) -> list[str]:
 
 
 def scan(repo_root: Path, output_format: str) -> int:
+    repo_profile = detect_repo_profile(repo_root)
     files = {path: rel_exists(repo_root, path) for path in GOVERNANCE_FILES}
     optional_public_files = {
         path: rel_exists(repo_root, path) for path in OPTIONAL_PUBLIC_FILES
@@ -204,11 +309,15 @@ def scan(repo_root: Path, output_format: str) -> int:
     plan_count = count_files(repo_root / "docs" / "plans", "*.md")
     task_count = count_files(repo_root / "docs" / "tasks", "*.md")
 
-    missing_files = [path for path, exists in files.items() if not exists]
-    missing_dirs = [path for path, exists in dirs.items() if not exists]
+    all_missing_files = [path for path, exists in files.items() if not exists]
+    all_missing_dirs = [path for path, exists in dirs.items() if not exists]
+    missing_by_group = group_missing_governance(repo_profile, repo_root, files, dirs)
+    profile_missing_files = flatten_missing_files(missing_by_group)
+    profile_missing_dirs = flatten_missing_directories(missing_by_group)
 
     payload = {
         "root": str(repo_root),
+        "repo_profile": repo_profile,
         "files": files,
         "optional_public_files": optional_public_files,
         "directories": dirs,
@@ -217,12 +326,24 @@ def scan(repo_root: Path, output_format: str) -> int:
             "plans": plan_count,
             "tasks": task_count,
         },
-        "missing_files": missing_files,
+        "missing_files": profile_missing_files,
+        "all_missing_files": all_missing_files,
+        "profile_missing_files": profile_missing_files,
+        "missing_by_group": missing_by_group,
         "missing_optional_public_files": [
             path for path, exists in optional_public_files.items() if not exists
         ],
-        "missing_directories": missing_dirs,
-        "recommendation": recommend(files, dirs, spec_count, plan_count),
+        "missing_directories": profile_missing_dirs,
+        "all_missing_directories": all_missing_dirs,
+        "profile_missing_directories": profile_missing_dirs,
+        "recommendation": recommend(
+            repo_profile,
+            repo_root,
+            files,
+            dirs,
+            spec_count,
+            plan_count,
+        ),
     }
 
     if output_format == "json":
@@ -238,21 +359,263 @@ def count_files(path: Path, pattern: str) -> int:
     return sum(1 for _ in path.glob(pattern))
 
 
+def iter_repo_files(repo_root: Path, limit: int = 500) -> list[Path]:
+    paths: list[Path] = []
+    for current_root, dirnames, filenames in os.walk(repo_root):
+        dirnames[:] = [
+            dirname for dirname in dirnames if dirname not in IGNORED_SCAN_DIRS
+        ]
+        base = Path(current_root)
+        for filename in filenames:
+            paths.append(base / filename)
+            if len(paths) >= limit:
+                return paths
+    return paths
+
+
+def detect_repo_profile(repo_root: Path) -> str:
+    files = iter_repo_files(repo_root)
+    relative_files = {
+        path.relative_to(repo_root).as_posix()
+        for path in files
+        if path.is_file()
+    }
+    top_level_names = {path.name for path in repo_root.iterdir()} if repo_root.is_dir() else set()
+
+    if is_plugin_repo(repo_root):
+        return "plugin"
+    if has_app_signal(repo_root, relative_files):
+        return "app"
+    if has_cli_script_signal(repo_root):
+        return "script"
+    if has_library_signal(top_level_names, relative_files):
+        return "library"
+    if has_script_signal(repo_root, files, relative_files):
+        return "script"
+    if has_docs_signal(files, relative_files):
+        return "docs"
+    return "unknown"
+
+
+def is_plugin_repo(repo_root: Path) -> bool:
+    if rel_exists(repo_root, ".codex-plugin/plugin.json"):
+        return True
+    if rel_exists(repo_root, ".claude-plugin/plugin.json"):
+        return True
+    skills_root = repo_root / "skills"
+    if skills_root.is_dir() and any(skills_root.glob("*/SKILL.md")):
+        return True
+    return False
+
+
+def has_app_signal(repo_root: Path, relative_files: set[str]) -> bool:
+    app_paths = {
+        "index.html",
+        "public/index.html",
+        "src/App.jsx",
+        "src/App.tsx",
+        "src/main.jsx",
+        "src/main.tsx",
+        "app/page.jsx",
+        "app/page.tsx",
+        "pages/index.jsx",
+        "pages/index.tsx",
+    }
+    if relative_files.intersection(app_paths):
+        return True
+
+    package_json = repo_root / "package.json"
+    if package_json.exists():
+        try:
+            payload = load_json(package_json)
+        except Exception:  # noqa: BLE001 - invalid metadata should not abort scan
+            payload = {}
+        dependency_names = set()
+        for key in ("dependencies", "devDependencies", "peerDependencies"):
+            dependencies = payload.get(key)
+            if isinstance(dependencies, dict):
+                dependency_names.update(dependencies)
+        if dependency_names.intersection(APP_PACKAGE_HINTS):
+            return True
+
+    return any(path.endswith((".vue", ".svelte")) for path in relative_files)
+
+
+def has_cli_script_signal(repo_root: Path) -> bool:
+    package_json = repo_root / "package.json"
+    if package_json.exists():
+        try:
+            payload = load_json(package_json)
+        except Exception:  # noqa: BLE001 - invalid metadata should not abort scan
+            payload = {}
+        if payload.get("bin"):
+            return True
+
+    pyproject = repo_root / "pyproject.toml"
+    if pyproject.exists():
+        text = read_text_safely(pyproject)
+        if "[project.scripts]" in text or "[tool.poetry.scripts]" in text:
+            return True
+
+    setup_cfg = repo_root / "setup.cfg"
+    if setup_cfg.exists() and "console_scripts" in read_text_safely(setup_cfg):
+        return True
+
+    cargo_toml = repo_root / "Cargo.toml"
+    if cargo_toml.exists() and "[[bin]]" in read_text_safely(cargo_toml):
+        return True
+
+    return False
+
+
+def read_text_safely(path: Path) -> str:
+    try:
+        return path.read_text()
+    except UnicodeDecodeError:
+        return ""
+
+
+def has_library_signal(top_level_names: set[str], relative_files: set[str]) -> bool:
+    if top_level_names.intersection(LIBRARY_MANIFESTS):
+        return True
+    package_markers = {
+        "__init__.py",
+        "lib.rs",
+        "mod.rs",
+    }
+    return any(path.endswith(tuple(package_markers)) for path in relative_files)
+
+
+def has_script_signal(
+    repo_root: Path,
+    files: list[Path],
+    relative_files: set[str],
+) -> bool:
+    scripts_root = repo_root / "scripts"
+    if scripts_root.is_dir():
+        for path in scripts_root.rglob("*"):
+            if path.is_file() and path.suffix in SCRIPT_EXTENSIONS:
+                return True
+    if "Makefile" in relative_files:
+        return True
+    runnable_files = [
+        path for path in files if path.suffix in SCRIPT_EXTENSIONS and path.parent == repo_root
+    ]
+    return bool(runnable_files)
+
+
+def has_docs_signal(files: list[Path], relative_files: set[str]) -> bool:
+    markdown_count = sum(1 for path in files if path.suffix.lower() == ".md")
+    source_count = sum(1 for path in files if path.suffix in SOURCE_EXTENSIONS)
+    return markdown_count > 0 and source_count == 0 and (
+        "README.md" in relative_files or any(path.startswith("docs/") for path in relative_files)
+    )
+
+
+def profile_uses_product(profile: str) -> bool:
+    return profile in {"app", "unknown"}
+
+
+def profile_uses_ui_brand(profile: str, repo_root: Path) -> bool:
+    if profile in {"app", "unknown"}:
+        return True
+    if profile == "plugin":
+        return has_ui_or_brand_assets(repo_root)
+    return False
+
+
+def has_ui_or_brand_assets(repo_root: Path) -> bool:
+    asset_roots = [repo_root / "assets", repo_root / "docs" / "assets"]
+    asset_extensions = {".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"}
+    for asset_root in asset_roots:
+        if not asset_root.is_dir():
+            continue
+        for path in asset_root.rglob("*"):
+            if path.is_file() and path.suffix.lower() in asset_extensions:
+                return True
+    return False
+
+
+def group_missing_governance(
+    profile: str,
+    repo_root: Path,
+    files: dict[str, bool],
+    dirs: dict[str, bool],
+) -> dict[str, list[str]]:
+    conditional_files: list[str] = []
+    if profile_uses_product(profile):
+        conditional_files.extend(PRODUCT_GOVERNANCE_FILES)
+    if profile_uses_ui_brand(profile, repo_root):
+        conditional_files.extend(UI_BRAND_GOVERNANCE_FILES)
+
+    conditional_dirs = (
+        UI_BRAND_GOVERNANCE_DIRS if profile_uses_ui_brand(profile, repo_root) else []
+    )
+
+    return {
+        "core_files": missing_core_files(files),
+        "delivery_files": missing_from(files, DELIVERY_GOVERNANCE_FILES),
+        "conditional_files": missing_from(files, conditional_files),
+        "archive_directories": missing_from(dirs, ARCHIVE_GOVERNANCE_DIRS),
+        "delivery_directories": missing_from(dirs, DELIVERY_GOVERNANCE_DIRS),
+        "conditional_directories": missing_from(dirs, conditional_dirs),
+    }
+
+
+def missing_from(values: dict[str, bool], paths: list[str]) -> list[str]:
+    return [path for path in paths if not values.get(path)]
+
+
+def missing_core_files(files: dict[str, bool]) -> list[str]:
+    missing: list[str] = []
+    if not any(files.get(path) for path in AGENT_GUIDE_FILES):
+        missing.extend(AGENT_GUIDE_FILES)
+    missing.extend(
+        missing_from(
+            files,
+            [
+                path
+                for path in CORE_GOVERNANCE_FILES
+                if path not in AGENT_GUIDE_FILES
+            ],
+        )
+    )
+    return missing
+
+
+def flatten_missing_files(missing_by_group: dict[str, list[str]]) -> list[str]:
+    files: list[str] = []
+    for key in ("core_files", "delivery_files", "conditional_files"):
+        files.extend(missing_by_group[key])
+    return files
+
+
+def flatten_missing_directories(missing_by_group: dict[str, list[str]]) -> list[str]:
+    directories: list[str] = []
+    for key in ("archive_directories", "delivery_directories", "conditional_directories"):
+        directories.extend(missing_by_group[key])
+    return directories
+
+
 def recommend(
+    profile: str,
+    repo_root: Path,
     files: dict[str, bool],
     dirs: dict[str, bool],
     spec_count: int,
     plan_count: int,
 ) -> str:
     if not files.get("AGENT.md") and not files.get("AGENTS.md"):
-        return "Start with repository-governance and create an agent guide."
+        return "Start with repository-governance and create a profile-aware agent guide."
+    if profile == "script" and not files.get("README.md"):
+        return "Create or update a README/runbook that explains how to run, configure, and validate the scripts."
     if not files.get("docs/CHANGELOG_AI.md") or not dirs.get("docs/archive"):
         return "Use change-archive-governance to set up AI change memory and archive policy."
-    if not files.get("docs/PRD.md"):
+    if profile_uses_product(profile) and not files.get("docs/PRD.md"):
         return "Use product-governance to clarify and create docs/PRD.md."
-    if not files.get("docs/DESIGN.md"):
+    if profile_uses_ui_brand(profile, repo_root) and not files.get("docs/DESIGN.md"):
         return "Use design-governance to create docs/DESIGN.md."
-    if not files.get("docs/BRAND.md"):
+    if profile_uses_ui_brand(profile, repo_root) and not files.get("docs/BRAND.md"):
         return "Use brand-governance to create docs/BRAND.md."
     if not dirs.get("docs/specs") or spec_count == 0:
         return "Use spec-workflow for the next non-trivial change."
@@ -265,11 +628,18 @@ def print_markdown_scan(payload: dict[str, Any]) -> None:
     print("# OpenArc Scan")
     print()
     print(f"Root: `{payload['root']}`")
+    print(f"Repo profile: `{payload['repo_profile']}`")
     print()
-    print("## Governance Files")
+    print("## Known Governance Files")
     for path, exists in payload["files"].items():
         mark = "ok" if exists else "missing"
         print(f"- {mark}: `{path}`")
+    print()
+    print("## Profile-Relevant Missing Files")
+    for group, paths in payload["missing_by_group"].items():
+        if not paths:
+            continue
+        print(f"- {group}: {', '.join(f'`{path}`' for path in paths)}")
     print()
     print("## Optional Public Files")
     for path, exists in payload["optional_public_files"].items():

@@ -4,11 +4,11 @@
 
 Before implementation, review:
 
-- `docs/PRD.md`
-- `docs/DESIGN.md`
-- `docs/BRAND.md`
+- `docs/PRD.md` for product or app work
+- `docs/DESIGN.md` for UI, frontend, desktop, mobile, or component work
+- `docs/BRAND.md` for public brand, identity, marketing, naming, or copy work
 - latest `docs/specs/*`
-- `docs/assets/*`
+- `docs/assets/*` when visual assets or references exist
 
 ## Working Rules
 
@@ -16,6 +16,7 @@ Before implementation, review:
 - Plan before implementation when multiple files or systems are affected.
 - Prefer minimal changes.
 - Reuse existing systems.
+- Match governance scope to repository profile; script, CLI, automation, library, and docs-only repositories do not need design or brand docs by default.
 - Keep diffs reviewable.
 - Update specs after implementation.
 - Avoid temporary files.

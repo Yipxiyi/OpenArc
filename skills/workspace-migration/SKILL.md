@@ -16,7 +16,7 @@ Move an existing repository toward OpenArc structure while preserving working pr
 1. Inventory the workspace:
    - agent guides
    - README and docs
-   - PRD/design/brand materials
+   - repo profile and profile-relevant PRD/design/brand materials
    - specs, plans, tasks
    - assets
    - changelog and releases
@@ -42,18 +42,24 @@ python3 plugins/openarc/scripts/openarc.py scan .
 
 Use the scan to seed the migration plan, not to auto-move files.
 
-## Target Structure
+## Profile-Aware Target Structure
 
 ```txt
 AGENT.md or AGENTS.md
+README.md
 docs/
-  PRD.md
-  DESIGN.md
-  BRAND.md
+  PROJECT_BRIEF.md
+  CODE_STYLE.md
+  TASKS.md
+  CHANGELOG_AI.md
   specs/
   plans/
   tasks/
-  assets/
+  archive/
+  PRD.md        # app/product profile when needed
+  DESIGN.md     # UI/frontend/desktop/mobile profile when needed
+  BRAND.md      # public brand or identity profile when needed
+  assets/       # UI, brand, screenshots, or visual references when needed
     brand/
     icons/
     illustrations/
@@ -64,6 +70,7 @@ docs/
 ## Rules
 
 - Existing files win over templates.
+- Repo profile controls target scope; script, CLI, automation, library, and docs-only repositories do not need design or brand scaffolding by default.
 - Do not flatten useful project-specific organization.
 - Do not move files only for aesthetics.
 - Do not delete legacy docs unless the user explicitly confirms deletion.
