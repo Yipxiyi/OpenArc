@@ -11,6 +11,8 @@ Use this skill when creating or updating `docs/PRD.md`.
 
 Build a product source of truth that is clear enough for agents to implement against without inventing product intent.
 
+Use Clarification Gate output when available. If the goal, audience, non-goals, constraints, or success criteria are still unclear, run `clarification-gate` before creating or rewriting `docs/PRD.md`.
+
 ## Fixed Clarification Flow
 
 If the user has not clearly specified the product direction, follow this flow before writing:
@@ -41,6 +43,7 @@ If the user has not clearly specified the product direction, follow this flow be
 ## Rules
 
 - Do not fill core product strategy with generic guesses.
+- Do not write PRD requirements from ambiguous goals; clarify first or record unresolved questions explicitly.
 - Preserve existing product language when it is coherent.
 - Keep requirements testable.
 - Link features to specs instead of duplicating detailed implementation plans.

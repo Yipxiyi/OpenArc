@@ -1,6 +1,6 @@
 {
   "name": "openarc",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "AI-native repository initialization and governance for sustainable vibe-coded projects.",
   "author": {
     "name": "OpenArc"
@@ -13,6 +13,8 @@
     "spec-driven-development",
     "vibe-coding",
     "repository-governance",
+    "clarification-gate",
+    "code-style",
     "release-workflow",
     "semantic-versioning",
     "workspace-migration",
@@ -24,7 +26,7 @@
   "interface": {
     "displayName": "OpenArc",
     "shortDescription": "AI-native governance for long-running coding-agent projects.",
-    "longDescription": "OpenArc helps AI coding agents initialize, understand, and maintain repositories through lightweight source-of-truth docs, PRDs, specs, plans, tasks, design guidance, brand guidance, asset structure, versioning rules, migration workflows, open-source maintenance, and release governance.",
+    "longDescription": "OpenArc helps AI coding agents initialize, understand, and maintain repositories through lightweight source-of-truth docs, clarification gates, code style guidance, PRDs, specs, plans, tasks, design guidance, brand guidance, asset structure, versioning rules, migration workflows, open-source maintenance, and release governance.",
     "developerName": "OpenArc",
     "category": "Developer Tools",
     "capabilities": [
@@ -38,6 +40,7 @@
     "websiteURL": "https://github.com/Yipxiyi/OpenArc",
     "defaultPrompt": [
       "Scan this repo with OpenArc and tell me what to do first.",
+      "Use OpenArc clarification-gate for this new requirement before implementation.",
       "Create a lightweight spec and implementation plan.",
       "Migrate this workspace to OpenArc conventions."
     ],

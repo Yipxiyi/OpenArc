@@ -4,6 +4,13 @@
 
 Draft
 
+## Project / Profile
+
+- Repository profile:
+- Platforms: web / iOS / Android / desktop / extension / docs / other
+- UI scope:
+- Non-UI scope:
+
 ## Clarification Status
 
 - Known:
@@ -11,19 +18,93 @@ Draft
 - Risky Assumptions:
 - Confirmed Decisions:
 
+## Evidence
+
+- Existing screens:
+- Component libraries:
+- CSS / theme files:
+- Assets:
+- Brand or product references:
+- Inferred choices:
+
 ## Design Principles
+
+- Audience:
+- Density:
+- Personality:
+- Accessibility posture:
+- Platform constraints:
 
 ## Tokens
 
+Tokens are optional but recommended when the project has a reusable UI system. Keep token names role-based and practical for implementation.
+
 ### Color
+
+- Primary:
+- Secondary:
+- Accent:
+- Surface:
+- Text:
+- Border:
+- Status:
 
 ### Typography
 
+- Display:
+- Heading:
+- Body:
+- Label:
+- Code / data:
+
 ### Spacing
+
+- Base scale:
+- Section spacing:
+- Component spacing:
 
 ### Radius
 
-### Shadow
+- Small:
+- Medium:
+- Large:
+- Full:
+
+### Shadow / Elevation
+
+- Surface:
+- Overlay:
+- Focus:
+
+## Platform Rules
+
+Document only the platform rules that apply to this repository.
+
+### Web
+
+- Responsive breakpoints:
+- Navigation:
+- Form controls:
+- Table / data density:
+
+### iOS / Mobile
+
+- Safe areas:
+- Native control expectations:
+- Touch targets:
+- Motion:
+
+### Desktop
+
+- Window layout:
+- Keyboard and pointer behavior:
+- Dense data views:
+
+### Docs / Content
+
+- Reading width:
+- Code blocks:
+- Navigation:
 
 ## Layout Rules
 
@@ -56,8 +137,6 @@ Draft
 
 ## Accessibility
 
-## Prohibited Patterns
-
 ## Asset References
 
 - `docs/assets/brand/`
@@ -65,5 +144,17 @@ Draft
 - `docs/assets/illustrations/`
 - `docs/assets/screenshots/`
 - `docs/assets/references/`
+
+## Do And Do Not
+
+### Do
+
+- [TODO]
+
+### Do Not
+
+- [TODO]
+
+## Prohibited Patterns
 
 ## Changelog

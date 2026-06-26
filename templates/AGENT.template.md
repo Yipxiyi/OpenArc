@@ -26,10 +26,12 @@ Rarely read:
 
 ## Working Rules
 
+- Clarify broad, ambiguous, risky, or new work before PRD, spec, plan, or implementation.
 - Spec first.
 - Plan before implementation when scope or risk is non-trivial.
 - Prefer minimal changes.
 - Reuse existing systems.
+- Infer code style from existing config and code before asking for preferences.
 - Avoid duplicate abstractions.
 - Match governance scope to repository profile; script, CLI, automation, library, and docs-only repositories do not need design or brand docs by default.
 - For UI work, check `docs/DESIGN.md` and existing components before creating a new component.
@@ -45,12 +47,13 @@ Rarely read:
 
 1. Analyze repository.
 2. Read governance docs.
-3. Create or update spec.
-4. Create implementation plan.
-5. Create tasks.
-6. Implement incrementally.
-7. Validate.
-8. Update documentation.
+3. Run clarification when the goal or constraints are not stable.
+4. Create or update spec.
+5. Create implementation plan.
+6. Create tasks.
+7. Implement incrementally.
+8. Validate.
+9. Update documentation.
 
 ## Change Tracking
 

@@ -26,6 +26,7 @@ REQUIRED_INTEGRATION_FILES = [
 
 REQUIRED_TEMPLATES = [
     "AGENT.template.md",
+    "CODE_STYLE.template.md",
     "PRD.template.md",
     "DESIGN.template.md",
     "BRAND.template.md",
@@ -217,7 +218,7 @@ def doctor(plugin_root: Path) -> int:
         except Exception as exc:  # noqa: BLE001 - command-line diagnostic
             failures.append(f"invalid plugin.json: {exc}")
         else:
-            if manifest.get("name") != plugin_root.name:
+            if str(manifest.get("name", "")).lower() != plugin_root.name.lower():
                 failures.append("plugin.json name must match plugin folder name")
             if manifest.get("license") == "[TODO: MIT]":
                 failures.append("plugin.json license still has placeholder value")
@@ -232,7 +233,7 @@ def doctor(plugin_root: Path) -> int:
         except Exception as exc:  # noqa: BLE001 - command-line diagnostic
             failures.append(f"invalid .claude-plugin/plugin.json: {exc}")
         else:
-            if claude_manifest.get("name") != plugin_root.name:
+            if str(claude_manifest.get("name", "")).lower() != plugin_root.name.lower():
                 failures.append(".claude-plugin/plugin.json name must match plugin folder name")
             if not claude_manifest.get("version"):
                 failures.append(".claude-plugin/plugin.json must include version")

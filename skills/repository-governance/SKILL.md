@@ -16,10 +16,12 @@ Help agents understand repository structure, identify governance documents, pres
 1. Scan the repository before changing files.
 2. Detect the repository profile: `script`, `library`, `app`, `plugin`, `docs`, or `unknown`.
 3. Detect existing conventions, docs, architecture notes, specs, plans, tasks, conditional product/design/brand files, assets, and agent guides.
-4. Identify conflicts between existing docs and requested OpenArc structure.
-5. Patch existing files when they already carry project intent.
-6. Create missing files only when they are relevant to the detected profile and no suitable existing source exists.
-7. Keep diffs small and reviewable.
+4. Detect existing code style signals and ask only for material code style preferences not already shown by the repo.
+5. For UI, frontend, desktop, mobile, or component repositories, detect design signals and ask only for material design preferences not already shown by the repo.
+6. Identify conflicts between existing docs and requested OpenArc structure.
+7. Patch existing files when they already carry project intent.
+8. Create missing files only when they are relevant to the detected profile and no suitable existing source exists.
+9. Keep diffs small and reviewable.
 
 If `scripts/openarc.py` is available, run or request:
 
@@ -79,6 +81,7 @@ The guide should cover:
 
 - Source-of-truth documents
 - Working rules
+- Code style source and unresolved style preferences
 - Execution workflow
 - Validation expectations
 - Repository-specific constraints
@@ -88,6 +91,7 @@ The guide should cover:
 
 - Do not rewrite existing governance docs just to match the template.
 - Do not invent architecture facts the repository does not show.
+- Do not invent code style preferences when the repository has no evidence; ask concise questions or leave the gap visible in `docs/CODE_STYLE.md`.
 - Do not create product, design, brand, or assets governance for repo profiles that do not need them.
 - Do not leave temporary files or duplicate documentation trees.
 - Do not make `docs/archive/*` part of default reading.
