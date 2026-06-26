@@ -21,6 +21,25 @@ def run_scan(repo_root: Path) -> dict:
 
 
 class ScanProfileTests(unittest.TestCase):
+    def test_doctor_requires_clarification_gate_and_code_style_template(self) -> None:
+        skill = PLUGIN_ROOT / "skills" / "clarification-gate" / "SKILL.md"
+        template = PLUGIN_ROOT / "templates" / "CODE_STYLE.template.md"
+
+        self.assertTrue(skill.exists())
+        self.assertTrue(template.exists())
+
+        text = skill.read_text()
+        self.assertIn("name: clarification-gate", text)
+        self.assertIn("description: Use when", text)
+
+        result = subprocess.run(
+            [sys.executable, str(OPENARC), "doctor", str(PLUGIN_ROOT)],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn("OpenArc doctor: PASS", result.stdout)
+
     def test_script_repo_does_not_recommend_design_or_brand_governance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -62,6 +81,7 @@ class ScanProfileTests(unittest.TestCase):
 
         self.assertEqual(payload["repo_profile"], "app")
         self.assertNotIn("AGENTS.md", payload["missing_files"])
+        self.assertIn("docs/CODE_STYLE.md", payload["missing_by_group"]["core_files"])
         self.assertIn("docs/DESIGN.md", payload["missing_by_group"]["conditional_files"])
         self.assertIn("design-governance", payload["recommendation"])
 

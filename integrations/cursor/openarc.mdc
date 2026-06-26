@@ -13,8 +13,10 @@ When the user asks to use OpenArc, scan the repository first and choose the smal
 - Keep edits small, reviewable, and reversible.
 - Prefer patching existing docs over replacing them.
 - Ask only for material unknowns.
+- Clarify broad, ambiguous, risky, or new work before PRD, spec, plan, or implementation.
 - Do not move, rename, delete, or archive files without confirmation.
 - Detect the repo profile before deciding which governance targets are required.
+- Infer code style from existing config and code before asking for preferences.
 - For non-trivial implementation, create or update a spec and plan before coding.
 - For release or packaging work, classify version impact with semantic versioning and update the changelog.
 - For UI work, check `docs/DESIGN.md` and existing components before creating a new component.
@@ -24,6 +26,7 @@ When the user asks to use OpenArc, scan the repository first and choose the smal
 ## Governance Targets
 
 - `AGENT.md` or `AGENTS.md`
+- `docs/CODE_STYLE.md`
 - `docs/specs/*.md`
 - `docs/plans/*.md`
 - `docs/tasks/*.md`

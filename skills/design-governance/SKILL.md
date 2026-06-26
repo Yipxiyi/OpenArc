@@ -11,6 +11,10 @@ Use this skill when a repository needs design-system guidance for implementation
 
 Maintain `docs/DESIGN.md` as the source of truth for how UI should be built.
 
+Use this skill only when the repository or request includes UI, frontend, desktop, mobile, component, visual asset, or design-system work. For script, CLI, automation, library, or docs-only repositories, do not create `docs/DESIGN.md` unless the user request or repository evidence introduces UI or visual design.
+
+Use Clarification Gate output when available. If the audience, platform, density, layout, accessibility, or visual direction is still unclear, clarify those material gaps before writing.
+
 ## Fixed Clarification Flow
 
 If the user has not clearly specified design direction, follow this flow before writing:
@@ -25,6 +29,8 @@ If the user has not clearly specified design direction, follow this flow before 
 
 ## DESIGN.md Owns
 
+- Project/profile and platform-specific rules
+- Evidence and source notes
 - Spacing
 - Typography
 - Tokens
@@ -73,6 +79,7 @@ Cross-reference them when useful, but keep the source-of-truth boundary clear.
 - Detect an existing design system before writing defaults.
 - Patch existing design docs instead of replacing them.
 - Prefer concrete implementation rules over abstract taste statements.
+- Tailor the design guide to the detected platform; do not put web-specific design-system rules into iOS, desktop, CLI, library, or docs-only projects.
 - Reference `docs/assets/` when visuals, screenshots, or brand assets are needed.
 - Do not invent a visual system when repository evidence and user intent are insufficient.
 - Before adding UI components, search for reusable local components and documented patterns.

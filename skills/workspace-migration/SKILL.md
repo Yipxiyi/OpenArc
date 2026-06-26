@@ -16,23 +16,26 @@ Move an existing repository toward OpenArc structure while preserving working pr
 1. Inventory the workspace:
    - agent guides
    - README and docs
+   - code style docs, formatter config, lint config, tests, and naming conventions
    - repo profile and profile-relevant PRD/design/brand materials
    - specs, plans, tasks
    - assets
    - changelog and releases
    - CI and GitHub workflows
 2. Map existing files to OpenArc targets.
-3. Classify actions:
+3. Identify missing code style preferences that cannot be inferred from existing config or code.
+4. For UI, frontend, desktop, mobile, or component profiles, identify missing design preferences that cannot be inferred from existing design docs, components, CSS, or assets.
+5. Classify actions:
    - keep as-is
    - patch in place
    - move or rename
    - create missing
    - archive duplicate
-4. Produce a migration plan before editing.
-5. Ask for confirmation before moving or renaming files.
-6. Apply small patches first.
-7. Validate links, docs, JSON/YAML, tests, and release workflow as applicable.
-8. Report all created, modified, moved, and skipped files.
+6. Produce a migration plan before editing.
+7. Ask for confirmation before moving or renaming files.
+8. Apply small patches first.
+9. Validate links, docs, JSON/YAML, tests, and release workflow as applicable.
+10. Report all created, modified, moved, and skipped files.
 
 If `scripts/openarc.py` is available, start with:
 
@@ -70,6 +73,7 @@ docs/
 ## Rules
 
 - Existing files win over templates.
+- Preserve inferred code style in `docs/CODE_STYLE.md`; ask only for preferences the repo cannot reveal.
 - Repo profile controls target scope; script, CLI, automation, library, and docs-only repositories do not need design or brand scaffolding by default.
 - Do not flatten useful project-specific organization.
 - Do not move files only for aesthetics.

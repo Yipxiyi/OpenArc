@@ -11,6 +11,8 @@ Use this skill when a feature, system change, or product direction needs a struc
 
 Create lightweight specs that keep humans and coding agents aligned without adding heavy process overhead.
 
+Use Clarification Gate output when available. If the feature behavior, non-goals, compatibility constraints, or acceptance criteria are not clear, run `clarification-gate` before drafting the spec.
+
 ## Location
 
 Use `docs/specs/` by default.
@@ -67,6 +69,7 @@ Use `templates/SPEC.template.md` as the baseline:
 - Keep specs concrete and implementation-facing.
 - Separate goals from non-goals.
 - Include acceptance criteria that can be verified.
+- Preserve Clarification Gate decisions in Background, Goals, Non-Goals, Requirements, Risks, or Open Questions instead of creating a separate intake document by default.
 - Update status and changelog after implementation.
 - Do not use specs as a dumping ground for unrelated product ideas.
 - Record the confirmed version decision in the changelog.

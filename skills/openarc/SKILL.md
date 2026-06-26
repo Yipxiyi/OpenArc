@@ -15,6 +15,7 @@ Map the user's request to the narrowest skill:
 | --- | --- |
 | "Set up OpenArc here" | `repository-governance`, then profile-specific governance skills as needed |
 | "What is missing?" / "Audit this repo" | `repository-governance`, then run the scan helper if available |
+| "Clarify this request" / "New feature" / "New goal" | `clarification-gate`, then route to PRD, spec, plan, or implementation |
 | "Write PRD" | `product-governance` |
 | "Write spec" | `spec-workflow` |
 | "Plan implementation" | `planning-engine` |
@@ -36,6 +37,7 @@ For a new or unfamiliar repository:
 4. Recommend one of:
    - bootstrap missing governance
    - migrate existing docs
+   - clarify a new goal or change before writing PRD, spec, or plan
    - create one spec and plan
    - prepare branch/PR/release
 5. Ask only for decisions that materially affect output.
@@ -55,6 +57,7 @@ Use script output as evidence, not as a replacement for judgment.
 
 - Do not load every OpenArc skill by default.
 - Do not create all governance docs unless the user asks for full setup.
+- Use `clarification-gate` before PRD, spec, plan, or implementation work when the request is broad, ambiguous, risky, or new.
 - Do not require `docs/DESIGN.md`, `docs/BRAND.md`, or `docs/assets/*` for script, CLI, automation, library, or docs-only repositories unless the repo already has UI or brand signals.
 - Prefer a small first useful artifact over a complete governance dump.
 - Existing repository conventions win over OpenArc templates.

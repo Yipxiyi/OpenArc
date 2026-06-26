@@ -6,6 +6,15 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.5.0
+
+- Added `clarification-gate` as a first-class OpenArc skill for clarifying broad, ambiguous, risky, or new work before PRD, spec, plan, or implementation.
+- Added a bounded question-budget model with recommended answers and trade-offs, plus guidance for carrying decisions into existing OpenArc docs instead of creating new intake or ADR trees by default.
+- Added `CODE_STYLE.template.md` and required it in `openarc.py doctor` so `docs/CODE_STYLE.md` has a stable template.
+- Updated repository setup, workspace migration, product, spec, planning, design, and implementation workflows to consume Clarification Gate output and collect code style or design preferences only when profile-relevant.
+- Expanded `DESIGN.template.md` with source-aware evidence, profile/platform rules, tokens, component standards, interaction, accessibility, and do/do-not guidance.
+- Updated README, Cursor adapters, examples, manifests, and validation tests for OpenArc 0.5.0.
+
 ## 0.4.0
 
 - Added profile-aware repository scans with `repo_profile`, profile-relevant `missing_files`, `all_missing_files`, grouped missing governance, and adaptive recommendations for script, library, app, plugin, docs, and unknown repositories.
