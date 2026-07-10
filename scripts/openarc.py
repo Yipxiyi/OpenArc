@@ -245,6 +245,20 @@ def is_semver(value: Any) -> bool:
     )
 
 
+def manifest_matches_plugin_root(plugin_root: Path, manifest: dict[str, Any]) -> bool:
+    name = manifest.get("name")
+    version = manifest.get("version")
+    if not isinstance(name, str) or not name:
+        return False
+    if plugin_root.name.lower() == name.lower():
+        return True
+    return (
+        is_semver(version)
+        and plugin_root.name == version
+        and plugin_root.parent.name.lower() == name.lower()
+    )
+
+
 def parse_skill_frontmatter(path: Path) -> dict[str, str]:
     try:
         text = path.read_text()
@@ -281,8 +295,10 @@ def doctor(plugin_root: Path) -> int:
         except Exception as exc:  # noqa: BLE001 - command-line diagnostic
             failures.append(f"invalid plugin.json: {exc}")
         else:
-            if str(manifest.get("name", "")).lower() != plugin_root.name.lower():
-                failures.append("plugin.json name must match plugin folder name")
+            if not manifest_matches_plugin_root(plugin_root, manifest):
+                failures.append(
+                    "plugin.json name must match the plugin folder or its versioned cache parent"
+                )
             if manifest.get("license") == "[TODO: MIT]":
                 failures.append("plugin.json license still has placeholder value")
             if manifest.get("skills") != "./skills/":
@@ -312,8 +328,10 @@ def doctor(plugin_root: Path) -> int:
         except Exception as exc:  # noqa: BLE001 - command-line diagnostic
             failures.append(f"invalid .claude-plugin/plugin.json: {exc}")
         else:
-            if str(claude_manifest.get("name", "")).lower() != plugin_root.name.lower():
-                failures.append(".claude-plugin/plugin.json name must match plugin folder name")
+            if not manifest_matches_plugin_root(plugin_root, claude_manifest):
+                failures.append(
+                    ".claude-plugin/plugin.json name must match the plugin folder or its versioned cache parent"
+                )
             if not claude_manifest.get("version"):
                 failures.append(".claude-plugin/plugin.json must include version")
             elif not is_semver(claude_manifest.get("version")):

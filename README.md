@@ -14,7 +14,7 @@
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-7c3aed?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Cursor rules" src="https://img.shields.io/badge/Cursor-rules-111827?style=for-the-badge&labelColor=4a4a4a">
-  <img alt="Version 0.6.0" src="https://img.shields.io/badge/version-0.6.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.6.1" src="https://img.shields.io/badge/version-0.6.1-84cc16?style=for-the-badge&labelColor=4a4a4a">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
 </p>
 

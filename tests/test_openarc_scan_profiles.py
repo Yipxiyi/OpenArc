@@ -53,6 +53,26 @@ class ScanProfileTests(unittest.TestCase):
         )
         self.assertIn("OpenArc doctor: PASS", result.stdout)
 
+    def test_doctor_accepts_versioned_codex_cache_root(self) -> None:
+        version = json.loads(
+            (PLUGIN_ROOT / ".codex-plugin/plugin.json").read_text()
+        )["version"]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "openarc" / version
+            shutil.copytree(
+                PLUGIN_ROOT,
+                root,
+                ignore=shutil.ignore_patterns(".git", "__pycache__"),
+            )
+            result = subprocess.run(
+                [sys.executable, str(OPENARC), "doctor", str(root)],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertIn("OpenArc doctor: PASS", result.stdout)
+
     def test_scan_rejects_missing_or_non_directory_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

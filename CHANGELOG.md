@@ -6,6 +6,10 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.6.1
+
+- Fixed `openarc.py doctor` so it accepts both a named plugin source directory and Codex's installed `<plugin>/<version>` cache layout.
+
 ## 0.6.0
 
 - Simplified repository scans into required, relevant, and optional governance instead of treating the full OpenArc inventory as mandatory.
