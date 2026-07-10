@@ -6,6 +6,14 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.6.2
+
+- Rebuilt the public README around a two-minute, read-only first-run path and moved the Chinese guide into `README.zh-CN.md`.
+- Added focused installation and framework reference documents while removing duplicated onboarding, comparison, skill, template, and policy sections from the root README.
+- Fixed root-versus-vendored helper commands, clarified Claude Code's session-only loading behavior, and documented observable success criteria for each integration.
+- Updated default prompts so specs and plans are selected independently instead of being created together by default.
+- Linked contribution, changelog, release, CI, and license surfaces directly and replaced the manually maintained version badge with the latest GitHub release badge.
+
 ## 0.6.1
 
 - Fixed `openarc.py doctor` so it accepts both a named plugin source directory and Codex's installed `<plugin>/<version>` cache layout.

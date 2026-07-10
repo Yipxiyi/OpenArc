@@ -1,6 +1,6 @@
 {
   "name": "openarc",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "AI-native repository initialization and governance for sustainable vibe-coded projects.",
   "author": {
     "name": "OpenArc"
@@ -39,9 +39,10 @@
     ],
     "websiteURL": "https://github.com/Yipxiyi/OpenArc",
     "defaultPrompt": [
-      "Scan this repo with OpenArc and tell me what to do first.",
+      "Audit this repository with OpenArc read-only and report the single smallest next action.",
       "Use OpenArc clarification-gate for this new requirement before implementation.",
-      "Create a lightweight spec and implementation plan.",
+      "Create a lightweight spec for this behavior change.",
+      "Plan this migration with rollback and validation.",
       "Migrate this workspace to OpenArc conventions."
     ],
     "brandColor": "#2563EB",
