@@ -6,6 +6,10 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.7.1
+
+- Simplified the README quick start to one copyable agent installation prompt, with manual commands kept in the troubleshooting guide.
+
 ## 0.7.0
 
 - Added a repository-hosted Codex marketplace manifest for pinned remote installation from GitHub releases.

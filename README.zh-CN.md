@@ -33,33 +33,23 @@ OpenArc 适合这些场景：
 
 ## 两分钟快速开始
 
-### 1. 获取 OpenArc
+### 1. 让 Agent 安装 OpenArc
 
-```bash
-git clone https://github.com/Yipxiyi/OpenArc.git
-cd OpenArc
-python3 scripts/openarc.py doctor .
+把下面这段 Prompt 复制给 Codex、Claude Code 或 Cursor：
+
+```text
+请从 https://github.com/Yipxiyi/OpenArc 安装最新稳定版 OpenArc，
+并自动适配我当前使用的编程 Agent 环境。
+
+请使用当前平台支持的插件或集成方式，自动执行全部必要步骤。
+保留我现有的插件、marketplace、规则和配置；暂时不要初始化治理，
+也不要修改当前项目。
+
+安装后请完成验证，并报告 OpenArc 的版本、启用状态、安装方式，
+以及是否需要重启。如果遇到阻塞，请说明准确原因和我唯一需要执行的最小操作。
 ```
 
-最后一条命令输出 `OpenArc doctor: PASS`，表示插件包校验成功。
-
-选择使用平台：
-
-| 工具 | 最短本地路径 | 详细说明 |
-| --- | --- | --- |
-| Codex | 把 `Yipxiyi/OpenArc` 添加为固定版本 marketplace，再安装 `openarc@openarc`。 | [Codex 安装](docs/INSTALL.md#codex) |
-| Claude Code | 运行 `claude --plugin-dir .`，仅在当前会话加载。 | [Claude Code](docs/INSTALL.md#claude-code) |
-| Cursor | 使用 `cp -n` 复制项目规则，避免覆盖已有文件。 | [Cursor](docs/INSTALL.md#cursor) |
-
-在 Codex 中安装最新的固定版本：
-
-```bash
-codex plugin marketplace add Yipxiyi/OpenArc --ref v0.7.0
-codex plugin add openarc@openarc
-codex plugin list --marketplace openarc
-```
-
-完整升级流程和本地开发安装方式见 [安装指南](docs/INSTALL.md)。
+需要手动安装或排查问题时，查看 [安装指南](docs/INSTALL.md)。
 
 ### 2. 从只读审计开始
 

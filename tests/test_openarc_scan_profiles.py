@@ -153,6 +153,9 @@ class ScanProfileTests(unittest.TestCase):
             marketplace = json.loads(path.read_text())
             marketplace["plugins"][0]["source"]["ref"] = "v0.6.2"
             path.write_text(json.dumps(marketplace))
+            version = json.loads(
+                (root / ".codex-plugin" / "plugin.json").read_text()
+            )["version"]
 
             result = subprocess.run(
                 [sys.executable, str(OPENARC), "doctor", str(root)],
@@ -162,7 +165,7 @@ class ScanProfileTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 1)
         self.assertIn(
-            "marketplace plugin ref must match plugin version: v0.7.0",
+            f"marketplace plugin ref must match plugin version: v{version}",
             result.stdout,
         )
 

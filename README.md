@@ -33,33 +33,24 @@ OpenArc is useful when:
 
 ## Two-minute quick start
 
-### 1. Get OpenArc
+### 1. Ask your agent to install OpenArc
 
-```bash
-git clone https://github.com/Yipxiyi/OpenArc.git
-cd OpenArc
-python3 scripts/openarc.py doctor .
+Copy this prompt into Codex, Claude Code, or Cursor:
+
+```text
+Install the latest stable release of OpenArc from https://github.com/Yipxiyi/OpenArc
+for the coding agent environment I am currently using.
+
+Use this platform's supported plugin or integration method and perform all necessary
+terminal steps yourself. Preserve my existing plugins, marketplaces, rules, and
+configuration. Do not initialize governance or modify my current project yet.
+
+Verify the installation, then report the installed OpenArc version, enabled status,
+installation method, and whether I need to restart anything. If you are blocked,
+report the exact blocker and the single smallest action I need to take.
 ```
 
-Success means the final command prints `OpenArc doctor: PASS`.
-
-Choose an integration:
-
-| Tool | Fastest local path | Details |
-| --- | --- | --- |
-| Codex | Add `Yipxiyi/OpenArc` as a pinned marketplace, then install `openarc@openarc`. | [Codex install](docs/INSTALL.md#codex) |
-| Claude Code | Run `claude --plugin-dir .` for the current session. | [Claude Code](docs/INSTALL.md#claude-code) |
-| Cursor | Copy the project rule with `cp -n` so existing rules are preserved. | [Cursor](docs/INSTALL.md#cursor) |
-
-For Codex, install the latest pinned release:
-
-```bash
-codex plugin marketplace add Yipxiyi/OpenArc --ref v0.7.0
-codex plugin add openarc@openarc
-codex plugin list --marketplace openarc
-```
-
-The complete upgrade and local-development paths are documented in [Install OpenArc](docs/INSTALL.md).
+For manual installation or troubleshooting, see [Install OpenArc](docs/INSTALL.md).
 
 ### 2. Start with a read-only audit
 
