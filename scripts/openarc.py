@@ -64,6 +64,8 @@ AGENT_GUIDE_FILES = [
     "AGENTS.md",
 ]
 
+AGENT_GUIDE_REQUIREMENT = "AGENT.md or AGENTS.md"
+
 CORE_GOVERNANCE_FILES = [
     *AGENT_GUIDE_FILES,
     "README.md",
@@ -74,7 +76,6 @@ CORE_GOVERNANCE_FILES = [
 ]
 
 DELIVERY_GOVERNANCE_FILES = [
-    "docs/SPEC.md",
     "docs/ARCHITECTURE.md",
 ]
 
@@ -103,7 +104,6 @@ OPTIONAL_PUBLIC_FILES = [
 DELIVERY_GOVERNANCE_DIRS = [
     "docs/specs",
     "docs/plans",
-    "docs/tasks",
 ]
 
 ARCHIVE_GOVERNANCE_DIRS = [
@@ -142,6 +142,7 @@ SOURCE_EXTENSIONS = {
     ".c",
     ".cc",
     ".cpp",
+    ".cs",
     ".go",
     ".java",
     ".js",
@@ -181,9 +182,26 @@ APP_PACKAGE_HINTS = {
     "react-dom",
     "solid-js",
     "svelte",
-    "vite",
     "vue",
 }
+
+APP_ENTRY_PATHS = {
+    "index.html",
+    "public/index.html",
+    "src/App.jsx",
+    "src/App.tsx",
+    "src/main.jsx",
+    "src/main.tsx",
+    "app/page.jsx",
+    "app/page.tsx",
+    "pages/index.jsx",
+    "pages/index.tsx",
+}
+
+RELEVANT_CORE_FILES = [
+    "docs/PROJECT_BRIEF.md",
+    "docs/CODE_STYLE.md",
+]
 
 LIBRARY_MANIFESTS = {
     "Cargo.toml",
@@ -387,17 +405,38 @@ def scan(repo_root: Path, output_format: str) -> int:
 
     spec_count = count_files(repo_root / "docs" / "specs", "*.md")
     plan_count = count_files(repo_root / "docs" / "plans", "*.md")
-    task_count = count_files(repo_root / "docs" / "tasks", "*.md")
+    task_count = int(files["docs/TASKS.md"])
 
-    all_missing_files = [path for path, exists in files.items() if not exists]
-    all_missing_dirs = [path for path, exists in dirs.items() if not exists]
-    missing_by_group = group_missing_governance(repo_profile, repo_root, files, dirs)
-    profile_missing_files = flatten_missing_files(missing_by_group)
-    profile_missing_dirs = flatten_missing_directories(missing_by_group)
+    categories = categorize_governance(
+        repo_profile,
+        repo_root,
+        files,
+        dirs,
+        optional_public_files,
+    )
+    missing_by_group = {
+        f"{level}_{kind}": missing_from_status(categories[level][kind])
+        for level in ("required", "relevant")
+        for kind in ("files", "directories")
+    }
+    profile_missing_files = (
+        missing_by_group["required_files"] + missing_by_group["relevant_files"]
+    )
+    profile_missing_dirs = (
+        missing_by_group["required_directories"]
+        + missing_by_group["relevant_directories"]
+    )
+    all_missing_files = profile_missing_files + missing_from_status(
+        categories["optional"]["files"]
+    )
+    all_missing_dirs = profile_missing_dirs + missing_from_status(
+        categories["optional"]["directories"]
+    )
 
     payload = {
         "root": str(repo_root),
         "repo_profile": repo_profile,
+        **categories,
         "files": files,
         "optional_public_files": optional_public_files,
         "directories": dirs,
@@ -417,12 +456,7 @@ def scan(repo_root: Path, output_format: str) -> int:
         "all_missing_directories": all_missing_dirs,
         "profile_missing_directories": profile_missing_dirs,
         "recommendation": recommend(
-            repo_profile,
-            repo_root,
-            files,
-            dirs,
-            spec_count,
-            plan_count,
+            categories,
         ),
     }
 
@@ -439,18 +473,16 @@ def count_files(path: Path, pattern: str) -> int:
     return sum(1 for _ in path.glob(pattern))
 
 
-def iter_repo_files(repo_root: Path, limit: int = 500) -> list[Path]:
+def iter_repo_files(repo_root: Path) -> list[Path]:
     paths: list[Path] = []
     for current_root, dirnames, filenames in os.walk(repo_root):
-        dirnames[:] = [
+        dirnames[:] = sorted(
             dirname for dirname in dirnames if dirname not in IGNORED_SCAN_DIRS
-        ]
+        )
         base = Path(current_root)
-        for filename in filenames:
+        for filename in sorted(filenames):
             paths.append(base / filename)
-            if len(paths) >= limit:
-                return paths
-    return paths
+    return sorted(paths)
 
 
 def detect_repo_profile(repo_root: Path) -> str:
@@ -489,19 +521,7 @@ def is_plugin_repo(repo_root: Path) -> bool:
 
 
 def has_app_signal(repo_root: Path, relative_files: set[str]) -> bool:
-    app_paths = {
-        "index.html",
-        "public/index.html",
-        "src/App.jsx",
-        "src/App.tsx",
-        "src/main.jsx",
-        "src/main.tsx",
-        "app/page.jsx",
-        "app/page.tsx",
-        "pages/index.jsx",
-        "pages/index.tsx",
-    }
-    if relative_files.intersection(app_paths):
+    if relative_files.intersection(APP_ENTRY_PATHS):
         return True
 
     package_json = repo_root / "package.json"
@@ -563,7 +583,7 @@ def has_library_signal(top_level_names: set[str], relative_files: set[str]) -> b
         "lib.rs",
         "mod.rs",
     }
-    return any(path.endswith(tuple(package_markers)) for path in relative_files)
+    return any(Path(path).name in package_markers for path in relative_files)
 
 
 def has_script_signal(
@@ -592,115 +612,106 @@ def has_docs_signal(files: list[Path], relative_files: set[str]) -> bool:
     )
 
 
-def profile_uses_product(profile: str) -> bool:
-    return profile in {"app", "unknown"}
+def has_design_signal(profile: str, repo_root: Path) -> bool:
+    return profile == "app" or rel_exists(repo_root, "docs/DESIGN.md") or any(
+        rel_exists(repo_root, path) for path in APP_ENTRY_PATHS
+    )
 
 
-def profile_uses_ui_brand(profile: str, repo_root: Path) -> bool:
-    if profile in {"app", "unknown"}:
-        return True
-    if profile == "plugin":
-        return has_ui_or_brand_assets(repo_root)
-    return False
+def has_brand_signal(repo_root: Path) -> bool:
+    brand_assets = repo_root / "docs" / "assets" / "brand"
+    return rel_exists(repo_root, "docs/BRAND.md") or (
+        brand_assets.is_dir() and any(path.is_file() for path in brand_assets.rglob("*"))
+    )
 
 
-def has_ui_or_brand_assets(repo_root: Path) -> bool:
-    asset_roots = [repo_root / "assets", repo_root / "docs" / "assets"]
-    asset_extensions = {".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"}
-    for asset_root in asset_roots:
-        if not asset_root.is_dir():
-            continue
-        for path in asset_root.rglob("*"):
-            if path.is_file() and path.suffix.lower() in asset_extensions:
-                return True
-    return False
+def relevant_governance(profile: str) -> tuple[list[str], list[str]]:
+    if profile == "unknown":
+        return [], []
+    if profile == "docs":
+        return ["docs/PROJECT_BRIEF.md"], []
+
+    files = list(RELEVANT_CORE_FILES)
+    if profile in {"app", "library", "plugin"}:
+        files.append("docs/ARCHITECTURE.md")
+    if profile == "app":
+        files.append("docs/PRD.md")
+    return files, []
 
 
-def group_missing_governance(
+def categorize_governance(
     profile: str,
     repo_root: Path,
     files: dict[str, bool],
     dirs: dict[str, bool],
-) -> dict[str, list[str]]:
-    conditional_files: list[str] = []
-    if profile_uses_product(profile):
-        conditional_files.extend(PRODUCT_GOVERNANCE_FILES)
-    if profile_uses_ui_brand(profile, repo_root):
-        conditional_files.extend(UI_BRAND_GOVERNANCE_FILES)
+    optional_public_files: dict[str, bool],
+) -> dict[str, dict[str, dict[str, bool]]]:
+    relevant_file_names, relevant_dir_names = relevant_governance(profile)
+    if has_design_signal(profile, repo_root):
+        relevant_file_names.append("docs/DESIGN.md")
+    if has_brand_signal(repo_root):
+        relevant_file_names.append("docs/BRAND.md")
 
-    conditional_dirs = (
-        UI_BRAND_GOVERNANCE_DIRS if profile_uses_ui_brand(profile, repo_root) else []
-    )
+    optional_file_names = [
+        path
+        for path in GOVERNANCE_FILES
+        if path not in AGENT_GUIDE_FILES
+        and path != "README.md"
+        and path not in relevant_file_names
+    ]
+    optional_files = {
+        path: files[path]
+        for path in optional_file_names
+    }
+    optional_files.update(optional_public_files)
 
     return {
-        "core_files": missing_core_files(files),
-        "delivery_files": missing_from(files, DELIVERY_GOVERNANCE_FILES),
-        "conditional_files": missing_from(files, conditional_files),
-        "archive_directories": missing_from(dirs, ARCHIVE_GOVERNANCE_DIRS),
-        "delivery_directories": missing_from(dirs, DELIVERY_GOVERNANCE_DIRS),
-        "conditional_directories": missing_from(dirs, conditional_dirs),
+        "required": {
+            "files": {
+                AGENT_GUIDE_REQUIREMENT: any(files[path] for path in AGENT_GUIDE_FILES),
+                "README.md": files["README.md"],
+            },
+            "directories": {},
+        },
+        "relevant": {
+            "files": {path: files[path] for path in relevant_file_names},
+            "directories": {path: dirs[path] for path in relevant_dir_names},
+        },
+        "optional": {
+            "files": optional_files,
+            "directories": {
+                path: dirs[path]
+                for path in GOVERNANCE_DIRS
+                if path not in relevant_dir_names
+            },
+        },
     }
 
 
-def missing_from(values: dict[str, bool], paths: list[str]) -> list[str]:
-    return [path for path in paths if not values.get(path)]
-
-
-def missing_core_files(files: dict[str, bool]) -> list[str]:
-    missing: list[str] = []
-    if not any(files.get(path) for path in AGENT_GUIDE_FILES):
-        missing.extend(AGENT_GUIDE_FILES)
-    missing.extend(
-        missing_from(
-            files,
-            [
-                path
-                for path in CORE_GOVERNANCE_FILES
-                if path not in AGENT_GUIDE_FILES
-            ],
-        )
-    )
-    return missing
-
-
-def flatten_missing_files(missing_by_group: dict[str, list[str]]) -> list[str]:
-    files: list[str] = []
-    for key in ("core_files", "delivery_files", "conditional_files"):
-        files.extend(missing_by_group[key])
-    return files
-
-
-def flatten_missing_directories(missing_by_group: dict[str, list[str]]) -> list[str]:
-    directories: list[str] = []
-    for key in ("archive_directories", "delivery_directories", "conditional_directories"):
-        directories.extend(missing_by_group[key])
-    return directories
+def missing_from_status(values: dict[str, bool]) -> list[str]:
+    return [path for path, exists in values.items() if not exists]
 
 
 def recommend(
-    profile: str,
-    repo_root: Path,
-    files: dict[str, bool],
-    dirs: dict[str, bool],
-    spec_count: int,
-    plan_count: int,
+    categories: dict[str, dict[str, dict[str, bool]]],
 ) -> str:
-    if not files.get("AGENT.md") and not files.get("AGENTS.md"):
+    required_files = missing_from_status(categories["required"]["files"])
+    relevant_files = missing_from_status(categories["relevant"]["files"])
+    relevant_dirs = missing_from_status(categories["relevant"]["directories"])
+
+    if AGENT_GUIDE_REQUIREMENT in required_files:
         return "Start with repository-governance and create a profile-aware agent guide."
-    if profile == "script" and not files.get("README.md"):
-        return "Create or update a README/runbook that explains how to run, configure, and validate the scripts."
-    if not files.get("docs/CHANGELOG_AI.md") or not dirs.get("docs/archive"):
-        return "Use change-archive-governance to set up AI change memory and archive policy."
-    if profile_uses_product(profile) and not files.get("docs/PRD.md"):
+    if "README.md" in required_files:
+        return "Create or update README.md with the repository's purpose and validation path."
+    if "docs/PRD.md" in relevant_files:
         return "Use product-governance to clarify and create docs/PRD.md."
-    if profile_uses_ui_brand(profile, repo_root) and not files.get("docs/DESIGN.md"):
+    if "docs/DESIGN.md" in relevant_files:
         return "Use design-governance to create docs/DESIGN.md."
-    if profile_uses_ui_brand(profile, repo_root) and not files.get("docs/BRAND.md"):
+    if "docs/BRAND.md" in relevant_files:
         return "Use brand-governance to create docs/BRAND.md."
-    if not dirs.get("docs/specs") or spec_count == 0:
-        return "Use spec-workflow for the next non-trivial change."
-    if not dirs.get("docs/plans") or plan_count == 0:
-        return "Use planning-engine before implementation."
+    if relevant_files or relevant_dirs:
+        missing = relevant_files + relevant_dirs
+        return f"Address profile-relevant governance: {', '.join(missing)}."
     return "Governance baseline exists; use implementation-workflow for changes."
 
 
@@ -709,27 +720,22 @@ def print_markdown_scan(payload: dict[str, Any]) -> None:
     print()
     print(f"Root: `{payload['root']}`")
     print(f"Repo profile: `{payload['repo_profile']}`")
-    print()
-    print("## Known Governance Files")
-    for path, exists in payload["files"].items():
-        mark = "ok" if exists else "missing"
-        print(f"- {mark}: `{path}`")
-    print()
-    print("## Profile-Relevant Missing Files")
-    for group, paths in payload["missing_by_group"].items():
-        if not paths:
-            continue
-        print(f"- {group}: {', '.join(f'`{path}`' for path in paths)}")
-    print()
-    print("## Optional Public Files")
-    for path, exists in payload["optional_public_files"].items():
-        mark = "ok" if exists else "optional"
-        print(f"- {mark}: `{path}`")
-    print()
-    print("## Directories")
-    for path, exists in payload["directories"].items():
-        mark = "ok" if exists else "missing"
-        print(f"- {mark}: `{path}`")
+    for level in ("required", "relevant", "optional"):
+        print()
+        title = level.capitalize()
+        if level == "optional":
+            title += " (present only)"
+        print(f"## {title}")
+        shown = False
+        for kind in ("files", "directories"):
+            for path, exists in payload[level][kind].items():
+                if level == "optional" and not exists:
+                    continue
+                shown = True
+                mark = "ok" if exists else "missing"
+                print(f"- {mark}: `{path}`")
+        if not shown:
+            print("- none")
     print()
     print("## Counts")
     for name, count in payload["counts"].items():

@@ -5,7 +5,7 @@ description: Use when producing a lightweight implementation plan before coding,
 
 # Planning Engine
 
-Use this skill before implementation when a change has meaningful scope, risk, or cross-file impact.
+Use this skill before implementation when sequencing, migration, rollback, validation, or coordination risk needs structure. Cross-file impact alone does not require a plan.
 
 ## Goal
 
@@ -37,6 +37,9 @@ Use `templates/PLAN.template.md` as the default shape. Save plans under `docs/pl
 - Keep plans lightweight.
 - Prefer the shortest viable path.
 - Do not turn routine changes into ceremony.
+- Do not create a plan solely because a change touches multiple files.
+- Use a spec instead when durable behavior, acceptance criteria, or compatibility alignment is the only need; use both only when execution risk also justifies a plan.
+- Put active tasks in `docs/TASKS.md` only when execution spans multiple stages, people, or agents.
 - Do not proceed to implementation if the plan exposes unresolved blockers that would make the work risky or incoherent.
 - Use Clarification Gate output as the preferred input when the request started broad, ambiguous, or cross-cutting.
 - Use `version-governance` when the plan implies patch, minor, or major release impact.

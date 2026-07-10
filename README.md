@@ -14,7 +14,7 @@
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-7c3aed?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Cursor rules" src="https://img.shields.io/badge/Cursor-rules-111827?style=for-the-badge&labelColor=4a4a4a">
-  <img alt="Version 0.5.1" src="https://img.shields.io/badge/version-0.5.1-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.6.0" src="https://img.shields.io/badge/version-0.6.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
 </p>
 
@@ -53,9 +53,9 @@ OpenArc gives a repository a small set of durable coordination surfaces:
 | Layer | Purpose |
 | --- | --- |
 | Repository guide | Tells agents how to work in this repo and where source-of-truth docs live. |
-| Clarification gate | Turns broad or ambiguous requests into confirmed goals, non-goals, constraints, and target docs before implementation. |
-| Profile-aware product, code style, design, and brand docs | Preserve product intent, implementation conventions, UI rules, and communication style only when the repository type needs them. |
-| Specs, plans, and tasks | Turn vague requests into scoped, reviewable implementation work. |
+| Clarification gate | Asks 0-5 material questions for broad or ambiguous work, then continues immediately when the work is ready and authorized. |
+| Profile-aware product, code style, design, and brand docs | Preserve only the governance supported by repository evidence; UI and brand are evaluated independently. |
+| Direct, spec, plan, or task path | Implements routine work directly and adds only the delivery artifact justified by risk or coordination. |
 | Component pattern governance | Helps agents reuse UI patterns instead of creating duplicate components. |
 | Change memory and archive | Keeps recent AI work visible while moving older context out of the active path. |
 | Release and version guidance | Keeps user-visible changes aligned with semantic versioning and changelog hygiene. |
@@ -64,8 +64,8 @@ OpenArc gives a repository a small set of durable coordination surfaces:
 
 - Initialize governance for a new or existing repo.
 - Audit an AI-built workspace for missing structure and drift.
-- Clarify new goals and non-trivial changes before PRD, spec, plan, or implementation work.
-- Create PRDs, specs, plans, tasks, and design guidance with a consistent workflow.
+- Clarify broad, ambiguous, risky, or new work with 0-5 material questions.
+- Implement routine, low-risk work directly; add PRDs, specs, plans, or tasks only when they carry a real decision or coordination need.
 - Capture code style preferences in `docs/CODE_STYLE.md`.
 - Preserve reusable component patterns in `docs/DESIGN.md`.
 - Migrate existing projects without destructive rewrites.
@@ -318,12 +318,12 @@ OpenArc is packaged as focused skills, templates, examples, and lightweight adap
 | `clarification-gate` | Focused goal, non-goal, constraint, and target-doc clarification before PRD, spec, plan, or implementation work. |
 | `repository-governance` | Repository scan, source-of-truth discovery, and agent guide setup. |
 | `product-governance` | PRD creation and product-intent clarification. |
-| `spec-workflow` | Versioned feature specs for non-trivial changes. |
-| `planning-engine` | Lightweight implementation plans before coding. |
+| `spec-workflow` | Durable feature specs when behavior, acceptance criteria, or compatibility needs a contract. |
+| `planning-engine` | Lightweight plans when sequencing, migration, rollback, or validation needs structure. |
 | `design-governance` | UI implementation rules, component standards, and design consistency. |
 | `brand-governance` | Product voice, naming, identity, and communication style. |
-| `assets-governance` | Asset organization under `docs/assets/`. |
-| `implementation-workflow` | Incremental implementation, validation, and documentation sync. |
+| `assets-governance` | Optional asset organization under `docs/assets/` when assets exist or organization is requested. |
+| `implementation-workflow` | Risk-scaled direct or documented implementation, validation, and documentation sync. |
 | `version-governance` | Semantic version classification and release impact guidance. |
 | `release-workflow` | Branch, commit, PR, and release-note preparation. |
 | `workspace-migration` | Conservative migration of existing workspaces into OpenArc conventions. |
@@ -340,7 +340,7 @@ The design governance layer gives UI work a reusable-component loop:
 - components that already cover roughly 70-80% of the use case are reused or extended
 - new components are reserved for cases where reuse would make the existing component unclear, brittle, or over-generalized
 - reusable component patterns are recorded in `docs/DESIGN.md`
-- one-off component decisions stay with the related spec or plan instead of bloating the design guide
+- one-off component decisions stay with the change context instead of bloating the design guide
 
 `docs/DESIGN.md` is meant to document stable reusable patterns, not every component in the codebase.
 
@@ -348,22 +348,23 @@ The design governance layer gives UI work a reusable-component loop:
 
 OpenArc uses ordinary repository files as durable memory. Agents read only what is relevant, and the helper scan classifies repositories as `script`, `library`, `app`, `plugin`, `docs`, or `unknown` before recommending governance files.
 
-Common durable surfaces:
+Canonical locations when used:
 
 - `AGENT.md` or `AGENTS.md`
 - `docs/CODE_STYLE.md`
-- `docs/specs/*.md`
+- `docs/specs/*.md` for feature specs
 - `docs/plans/*.md`
-- `docs/tasks/*.md`
+- `docs/TASKS.md` as the single active task ledger
 - `docs/CHANGELOG_AI.md`
 - `docs/archive/`
 
-Conditional surfaces:
+Independent conditional surfaces:
 
 - `docs/PRD.md` for product or app repositories.
 - `docs/DESIGN.md` for UI, frontend, desktop, mobile, or component work.
-- `docs/BRAND.md` for public brand, identity, marketing, naming, or copy work.
-- `docs/assets/*` when visual assets or references exist.
+- `docs/BRAND.md` for public brand, identity, marketing, naming, or copy work, independently of UI signals.
+
+`docs/assets/*` is optional. Use it only when assets already exist or the user explicitly requests asset organization. An `unknown` profile requires only `README.md` and one agent guide; it does not assume app, UI, brand, spec, plan, task, or archive governance.
 
 Pure script, CLI, automation, library, and docs-only repositories do not need design or brand scaffolding by default.
 
@@ -374,6 +375,17 @@ For public or open-source repositories, OpenArc can also inspect release and mai
 - `LICENSE`
 
 Existing files always win. OpenArc favors preserving intent and patching carefully over replacing working conventions.
+
+## Delivery Paths
+
+OpenArc stops at the smallest path that safely carries the work:
+
+- Direct: routine, low-risk work with clear scope and validation.
+- Spec: behavior, acceptance criteria, or compatibility needs a durable contract in `docs/specs/*.md`.
+- Plan: sequencing, migration, rollback, or validation risk needs structure in `docs/plans/*.md`.
+- Tasks: active multi-step coordination needs the single `docs/TASKS.md` ledger.
+
+These paths are selected independently; a change does not need to pass through every artifact.
 
 ## Change Memory and Archive Governance
 
@@ -402,22 +414,23 @@ python3 plugins/openarc/scripts/openarc.py scan <repo-root> --format json
 python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 ```
 
-`scan` identifies the repo profile, separates core, delivery, and conditional governance gaps, and recommends the next OpenArc workflow. In JSON output, `missing_files` is profile-relevant while `all_missing_files` keeps the full known governance inventory. Public maintenance files such as `CHANGELOG.md`, `CONTRIBUTING.md`, and `LICENSE` are reported separately as optional public files, not as baseline governance gaps for every workspace.
+`scan` identifies the repo profile and reports governance as `required`, `relevant`, or `optional`. Required gaps belong to the minimal profile baseline, relevant items depend on repository signals or current work, and optional items never make the repository unhealthy. The `unknown` profile requires only `README.md` and one agent guide; UI and brand signals are evaluated independently, and assets remain optional.
 
 `doctor` validates the plugin package before publication by checking manifests, required public files, required templates, integration adapters, and skill frontmatter.
 
 ## Clarification Gate
 
-OpenArc treats broad new goals and non-trivial changes as clarification-first work. The Clarification Gate keeps PRDs, specs, plans, code style, design, and brand docs grounded in repository evidence and confirmed decisions instead of vague filler.
+OpenArc treats broad, ambiguous, risky, or new work as clarification-first. Routine work with clear scope and validation can proceed directly. The Clarification Gate keeps PRDs, specs, plans, code style, design, and brand docs grounded in repository evidence and confirmed decisions instead of vague filler.
 
 When the repo profile or user request calls for a new PRD, spec, plan, code style decision, design guide, or brand guidance, the workflow is:
 
 1. Discover existing repo signals: README, package metadata, app screens, code style config, docs, copy, design tokens, assets, and recent specs.
 2. Separate known facts, unknowns, contradictions, and risky assumptions.
-3. Ask only material questions that cannot be answered from the repository.
-4. Keep the default question budget to 5 questions, each with a recommended answer and trade-off.
-5. Convert confirmed decisions into the existing target document: PRD, spec, plan, tasks, changelog, code style, design, or brand.
-6. Leave remaining ambiguity visible instead of hiding it in generic prose.
+3. Ask 0-5 material questions that cannot be answered from the repository; ask none when evidence is sufficient.
+4. Give each question a recommended answer and trade-off.
+5. When readiness is `ready` and implementation is already authorized, continue in the same turn instead of asking the user to say "continue."
+6. Convert confirmed decisions into the smallest existing target: PRD, `docs/specs/*.md`, plan, `docs/TASKS.md`, changelog, code style, design, or brand.
+7. Leave remaining ambiguity visible instead of hiding it in generic prose.
 
 OpenArc does not create ADRs by default. ADRs are only suggested when a decision is hard to reverse, surprising without context, and the result of a real trade-off.
 
@@ -502,9 +515,9 @@ OpenArc 给仓库提供一组稳定、轻量的协作界面：
 | 层级 | 作用 |
 | --- | --- |
 | 仓库 agent guide | 告诉 agent 如何在这个仓库工作，以及事实来源文档在哪里。 |
-| 澄清关卡 | 在实现前把宽泛或模糊需求收敛为已确认目标、非目标、约束和目标文档。 |
-| 自适应产品、代码风格、设计、品牌文档 | 只在仓库类型需要时保留产品意图、实现约定、UI 规则和对外表达风格。 |
-| specs、plans、tasks | 把模糊需求变成有边界、可审阅的实现工作。 |
+| 澄清关卡 | 对宽泛或模糊工作询问 0-5 个关键问题；工作已就绪且已获授权时立即继续。 |
+| 自适应产品、代码风格、设计、品牌文档 | 只保留仓库证据支持的治理内容；UI 与品牌信号独立判断。 |
+| 直接实现、spec、plan 或 task 路径 | 日常改动直接实现，只增加风险或协作真正需要的交付文档。 |
 | 组件模式治理 | 帮助 agent 复用 UI 模式，而不是重复造相似组件。 |
 | 变更记忆和归档 | 让近期 AI 工作保持可见，同时把旧上下文移出活跃路径。 |
 | 发布和版本指引 | 让用户可见变更、语义化版本和 changelog 保持一致。 |
@@ -513,8 +526,8 @@ OpenArc 给仓库提供一组稳定、轻量的协作界面：
 
 - 为新仓库或已有仓库初始化治理结构。
 - 审计 AI 构建的工作区，识别结构缺口和漂移。
-- 在 PRD、spec、plan 或实现前澄清新目标和中大型变更。
-- 用一致流程创建 PRD、spec、plan、task 和设计规范。
+- 对宽泛、模糊、高风险或全新工作询问 0-5 个关键问题。
+- 日常低风险改动直接实现；只有确实承载决策或协作需要时才增加 PRD、spec、plan 或 task。
 - 将代码风格偏好沉淀到 `docs/CODE_STYLE.md`。
 - 将可复用组件模式沉淀到 `docs/DESIGN.md`。
 - 在不破坏已有结构的前提下迁移项目。
@@ -767,12 +780,12 @@ OpenArc 被拆分为多个职责明确的 skills，避免 agent 每次加载不�
 | `clarification-gate` | 在 PRD、spec、plan 或实现前澄清目标、非目标、约束和目标文档。 |
 | `repository-governance` | 扫描仓库、识别事实来源文档、创建或修补 agent guide。 |
 | `product-governance` | 通过固定澄清流程创建或维护 `docs/PRD.md`。 |
-| `spec-workflow` | 创建和维护带版本的功能规格文档。 |
-| `planning-engine` | 在写代码前创建轻量实现计划。 |
+| `spec-workflow` | 当行为、验收标准或兼容性需要持久合同时创建和维护功能规格文档。 |
+| `planning-engine` | 当执行顺序、迁移、回滚或验证需要结构时创建轻量计划。 |
 | `design-governance` | 维护 `docs/DESIGN.md` 中面向实现的设计规则。 |
 | `brand-governance` | 维护 `docs/BRAND.md` 中的身份、语气和表达规则。 |
-| `assets-governance` | 组织 `docs/assets/` 下的资产。 |
-| `implementation-workflow` | 指导增量实现、验证和文档更新。 |
+| `assets-governance` | 已有资产或明确要求整理时，可选组织 `docs/assets/` 下的资产。 |
+| `implementation-workflow` | 按风险选择直接或文档化实现，并指导验证和文档同步。 |
 | `version-governance` | 判断变更属于 patch、minor 还是 major，并提出版本建议。 |
 | `release-workflow` | 管理分支、commit、PR 和发布说明准备。 |
 | `workspace-migration` | 将已有工作区迁移到 OpenArc 规范，避免破坏性重写。 |
@@ -789,7 +802,7 @@ OpenArc 帮助团队避免 AI 构建界面里常见的“一个新需求，一�
 - 已覆盖约 70%-80% 场景的组件会被复用或扩展
 - 新组件只用于复用会导致既有组件不清晰、脆弱或过度泛化的场景
 - 可复用组件模式会沉淀到 `docs/DESIGN.md`
-- 一次性组件决策保留在相关 spec 或 plan 中，避免设计指南膨胀
+- 一次性组件决策保留在本次变更上下文中，避免设计指南膨胀
 
 `docs/DESIGN.md` 应记录稳定可复用模式，而不是把代码库里的每个组件都列一遍。
 
@@ -797,22 +810,23 @@ OpenArc 帮助团队避免 AI 构建界面里常见的“一个新需求，一�
 
 OpenArc 使用普通仓库文件作为持久记忆。Agent 只读取相关内容，辅助扫描会先把仓库识别为 `script`、`library`、`app`、`plugin`、`docs` 或 `unknown`，再推荐治理文件。
 
-通用持久界面：
+使用时采用以下 canonical 路径：
 
 - `AGENT.md` 或 `AGENTS.md`
 - `docs/CODE_STYLE.md`
-- `docs/specs/*.md`
+- `docs/specs/*.md`：功能规格
 - `docs/plans/*.md`
-- `docs/tasks/*.md`
+- `docs/TASKS.md`：唯一活跃 task ledger
 - `docs/CHANGELOG_AI.md`
 - `docs/archive/`
 
-条件界面：
+相互独立的条件界面：
 
 - `docs/PRD.md`：产品或 app 仓库需要时使用。
 - `docs/DESIGN.md`：UI、前端、桌面端、移动端或组件工作需要时使用。
-- `docs/BRAND.md`：公开品牌、身份、营销、命名或文案工作需要时使用。
-- `docs/assets/*`：存在视觉资产或参考资料时使用。
+- `docs/BRAND.md`：公开品牌、身份、营销、命名或文案工作需要时使用，不由 UI 信号自动触发。
+
+`docs/assets/*` 是可选项，只在已有资产或用户明确要求整理资产时使用。`unknown` profile 只要求 `README.md` 和一个 agent guide，不默认推断 app、UI、品牌、spec、plan、task 或 archive 治理。
 
 纯脚本、CLI、自动化、库和文档型仓库默认不需要设计或品牌脚手架。
 
@@ -823,6 +837,17 @@ OpenArc 使用普通仓库文件作为持久记忆。Agent 只读取相关内容
 - `LICENSE`
 
 已有文件优先。OpenArc 倾向于保留现有意图，并以小步修补的方式调整，而不是重写已有仓库约定。
+
+## 交付路径
+
+OpenArc 使用能安全承载当前工作的最小路径：
+
+- 直接实现：范围和验证清晰的日常低风险改动。
+- Spec：行为、验收标准或兼容性需要持久合同时，写入 `docs/specs/*.md`。
+- Plan：执行顺序、迁移、回滚或验证风险需要结构时，写入 `docs/plans/*.md`。
+- Tasks：只有活跃的多步骤协作才写入唯一的 `docs/TASKS.md`。
+
+这些路径独立选择；一次变更不需要依次经过所有文档。
 
 ## 变更记忆与归档治理
 
@@ -851,22 +876,23 @@ python3 plugins/openarc/scripts/openarc.py scan <repo-root> --format json
 python3 plugins/openarc/scripts/openarc.py doctor <plugin-root>
 ```
 
-`scan` 会识别 repo profile，拆分 core、delivery、conditional 治理缺口，并给出下一步推荐流程。JSON 输出中，`missing_files` 只表示 profile-relevant 缺口，`all_missing_files` 保留完整已知治理清单。`CHANGELOG.md`、`CONTRIBUTING.md`、`LICENSE` 这类公开维护文件会单独作为 optional public files 汇报，不再作为所有工作区的基础治理缺口。
+`scan` 会识别 repo profile，并把治理项分为 `required`、`relevant`、`optional`。Required 是最小 profile 基线，relevant 取决于仓库信号或当前工作，optional 缺失不会让仓库变成不健康。`unknown` profile 只要求 `README.md` 和一个 agent guide；UI 与品牌信号独立判断，assets 始终可选。
 
 `doctor` 用于发布插件变更前校验 manifest、公开文件、模板、平台适配文件和 skill frontmatter。
 
 ## 澄清关卡
 
-OpenArc 将宽泛新目标和中大型变更视为先澄清再实现的工作。Clarification Gate 的目标，是让 PRD、spec、plan、代码风格、设计和品牌文档基于仓库证据和已确认决策，而不是用空泛表述补齐未知信息。
+OpenArc 对宽泛、模糊、高风险或全新工作先澄清；范围与验证清晰的日常改动可以直接实现。Clarification Gate 的目标，是让 PRD、spec、plan、代码风格、设计和品牌文档基于仓库证据和已确认决策，而不是用空泛表述补齐未知信息。
 
 当 repo profile 或用户请求需要新的 PRD、spec、plan、代码风格决策、设计指南或品牌指引时，流程是：
 
 1. 发现仓库已有信号：README、包信息、应用界面、代码风格配置、文档、文案、设计变量、素材和近期规格文档。
 2. 区分已知事实、未知信息、矛盾点和高风险假设。
-3. 只询问仓库无法回答的关键问题。
-4. 默认问题预算为 5 个问题，每个问题都要给出推荐答案和取舍。
-5. 将已确认决策写入现有目标文档：PRD、spec、plan、tasks、changelog、code style、design 或 brand。
-6. 保留仍未解决的模糊点，而不是用泛泛文字掩盖。
+3. 只询问仓库无法回答的 0-5 个关键问题；证据充足时不提问。
+4. 每个问题都给出推荐答案和取舍。
+5. 当 readiness 为 `ready` 且实现已经获授权时，同一轮直接继续，不再要求用户回复“继续”。
+6. 将已确认决策写入最小的现有目标：PRD、`docs/specs/*.md`、plan、`docs/TASKS.md`、changelog、code style、design 或 brand。
+7. 保留仍未解决的模糊点，而不是用泛泛文字掩盖。
 
 OpenArc 默认不创建 ADR。只有当决策难以回滚、缺少上下文会显得意外、且确实存在真实取舍时，才建议 ADR。
 
@@ -878,7 +904,7 @@ OpenArc 默认使用 semantic versioning：
 - Minor：向后兼容的新功能、新文档章节、新模板、新可选流程。
 - Major：破坏性变更、治理模型变更、不兼容 API/schema、公共命令重命名、行为移除。
 
-对用户提出的变更，agent 应判断变更等级，提出版本号建议，并在发布前请用户确认。
+只有 release-visible 变更才需要判断版本等级、提出版本号，并在发布前请用户确认。
 
 ## 迁移策略
 

@@ -15,6 +15,8 @@ Help agents understand repository structure, identify governance documents, pres
 
 1. Scan the repository before changing files.
 2. Detect the repository profile: `script`, `library`, `app`, `plugin`, `docs`, or `unknown`.
+   - For `unknown`, use a minimal baseline: README plus one agent guide. Report missing files, but create them only when setup is explicitly requested.
+   - Do not infer product, design, brand, spec, plan, task, or archive requirements from `unknown` alone.
 3. Detect existing conventions, docs, architecture notes, specs, plans, tasks, conditional product/design/brand files, assets, and agent guides.
 4. Detect existing code style signals and ask only for material code style preferences not already shown by the repo.
 5. For UI, frontend, desktop, mobile, or component repositories, detect design signals and ask only for material design preferences not already shown by the repo.
@@ -46,11 +48,10 @@ Default read priority:
 Conditional read:
 
 - `docs/PRD.md`
-- `docs/SPEC.md`
+- latest `docs/specs/*.md`
 - `docs/ARCHITECTURE.md`
 - `docs/DESIGN.md` for UI, frontend, desktop, mobile, or component work
 - `docs/BRAND.md` for brand, marketing, public-facing, or visual identity work
-- latest `docs/specs/*.md`
 - `docs/assets/*` when the repo has UI, screenshots, icons, brand assets, or visual references
 - `docs/CHANGELOG_AI.md`
 
@@ -91,6 +92,8 @@ The guide should cover:
 ## Hard Rules
 
 - Keep audits read-only unless the user explicitly asks to apply findings.
+- Do not make governance setup a prerequisite for routine implementation requests.
+- Use `docs/specs/*` for specs and `docs/TASKS.md` for active tasks; do not create parallel spec or task trees.
 - Do not rewrite existing governance docs just to match the template.
 - Do not invent architecture facts the repository does not show.
 - Do not invent code style preferences when the repository has no evidence; ask concise questions or leave the gap visible in `docs/CODE_STYLE.md`.

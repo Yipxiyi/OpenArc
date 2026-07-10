@@ -6,6 +6,16 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.6.0
+
+- Simplified repository scans into required, relevant, and optional governance instead of treating the full OpenArc inventory as mandatory.
+- Consolidated delivery sources of truth around `docs/specs/*`, `docs/plans/*`, and `docs/TASKS.md`.
+- Added a routine-change path that goes directly from repository evidence to the smallest implementation and validation without mandatory spec, plan, task, or version ceremony.
+- Decoupled spec file names from release versions and removed duplicate implementation-plan and task sections from the spec template.
+- Refined Clarification Gate to allow zero to five material questions and continue in the same turn when the request is ready and already authorized.
+- Improved repository profile detection by removing traversal truncation, separating UI and brand signals, and keeping unknown repositories on a minimal baseline.
+- Reduced human-facing scan noise so optional governance does not appear as required remediation.
+
 ## 0.5.1
 
 - Fixed audit routing so read-only reviews do not create or modify governance files without explicit apply intent.

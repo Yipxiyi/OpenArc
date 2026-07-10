@@ -1,28 +1,36 @@
 ---
 name: implementation-workflow
-description: Use when guiding OpenArc implementation order from repository scan through spec, plan, tasks, incremental implementation, validation, and documentation update.
+description: Use when implementing repository changes through the smallest safe path, from direct routine fixes to risk-driven clarification, specs, plans, task coordination, validation, and documentation updates.
 ---
 
 # Implementation Workflow
 
 Use this skill when moving from OpenArc governance into actual implementation.
 
-## Required Workflow
+## Choose the Smallest Path
 
-1. Scan repository.
-2. Detect repo profile and existing governance files.
-3. Analyze architecture.
-4. Run `clarification-gate` when the request is broad, ambiguous, risky, or new.
-5. Patch or create `AGENT.md` or `AGENTS.md`.
-6. Patch or create profile-relevant governance docs.
-7. Create or update the relevant spec.
-8. Create or update the implementation plan.
-9. Create or update tasks.
-10. Classify version impact and confirm the proposed version when release-visible.
-11. Implement incrementally.
-12. For UI work, check component reuse before adding new components.
-13. Validate.
-14. Update documentation.
+### Routine Work
+
+Use direct implementation when scope, constraints, expected behavior, and validation are clear and the change has no unresolved product, compatibility, migration, security, or cross-system decision.
+
+1. Inspect the affected flow and callers.
+2. Reuse the existing implementation and conventions.
+3. Make the smallest coherent change.
+4. Run the smallest check that would catch a regression.
+5. Update existing documentation only when behavior changed or repository policy requires it.
+
+Do not create or patch an agent guide, governance document, spec, plan, or task list as a prerequisite for routine work.
+
+### Non-Trivial Work
+
+1. Inspect the repository, affected architecture, existing governance, and reusable systems.
+2. Run `clarification-gate` only when material decisions remain unresolved.
+3. Create or update a spec in `docs/specs/*` when behavior, acceptance criteria, or compatibility needs durable alignment.
+4. Create or update a plan in `docs/plans/*` when sequencing, migration, rollback, or validation risk needs structure.
+5. Use both a spec and a plan only when both decision alignment and execution risk justify them.
+6. Use `docs/TASKS.md` only when execution spans multiple stages, people, or agents.
+7. Classify version impact when the change is release-visible.
+8. Implement incrementally, apply the component reuse gate for UI work, validate, and update relevant existing documentation.
 
 ## Component Reuse Gate
 
@@ -49,7 +57,9 @@ For script, CLI, automation, data-processing, library, or docs-only repositories
 ## Rules
 
 - Do not begin unrelated business features while setting up OpenArc.
-- Do not start implementation from an unclear goal; use `clarification-gate` and carry its decisions into PRD, spec, plan, tasks, or existing docs.
+- Do not start implementation while a material decision is unresolved; use `clarification-gate`, then continue in the same turn when readiness is `ready` and the original request authorizes implementation.
+- Do not require a spec and a plan together when either one is sufficient.
+- Do not create a task tree parallel to `docs/TASKS.md`.
 - Reuse existing code, docs, scripts, and conventions.
 - Prefer patch-based updates over rewrites.
 - Keep implementation and documentation in sync.

@@ -18,7 +18,7 @@ Move an existing repository toward OpenArc structure while preserving working pr
    - README and docs
    - code style docs, formatter config, lint config, tests, and naming conventions
    - repo profile and profile-relevant PRD/design/brand materials
-   - specs, plans, tasks
+   - `docs/specs/*`, `docs/plans/*`, and `docs/TASKS.md`
    - assets
    - changelog and releases
    - CI and GitHub workflows
@@ -47,32 +47,29 @@ Use the scan to seed the migration plan, not to auto-move files.
 
 ## Profile-Aware Target Structure
 
+For an `unknown` profile, stop at the existing repository conventions plus a README and one agent guide. Do not create the `docs/` tree below from the profile alone.
+
 ```txt
 AGENT.md or AGENTS.md
 README.md
 docs/
-  PROJECT_BRIEF.md
-  CODE_STYLE.md
-  TASKS.md
-  CHANGELOG_AI.md
-  specs/
-  plans/
-  tasks/
-  archive/
+  PROJECT_BRIEF.md # when durable project intent needs a home
+  CODE_STYLE.md    # when stable conventions need a home
+  TASKS.md         # multi-stage or multi-person/agent coordination only
+  specs/           # behavior or compatibility contracts only
+  plans/           # sequencing, migration, rollback, or validation risk only
+  CHANGELOG_AI.md  # when AI change memory is explicitly used
+  archive/         # when historical context needs archiving
   PRD.md        # app/product profile when needed
   DESIGN.md     # UI/frontend/desktop/mobile profile when needed
   BRAND.md      # public brand or identity profile when needed
-  assets/       # UI, brand, screenshots, or visual references when needed
-    brand/
-    icons/
-    illustrations/
-    screenshots/
-    references/
+  assets/       # existing assets or explicitly requested organization only
 ```
 
 ## Rules
 
 - Existing files win over templates.
+- Use `docs/specs/*` for specs and `docs/TASKS.md` for active tasks; do not create parallel spec or task trees.
 - Preserve inferred code style in `docs/CODE_STYLE.md`; ask only for preferences the repo cannot reveal.
 - Repo profile controls target scope; script, CLI, automation, library, and docs-only repositories do not need design or brand scaffolding by default.
 - Do not flatten useful project-specific organization.

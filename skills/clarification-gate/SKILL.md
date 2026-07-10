@@ -28,7 +28,7 @@ The gate should decide:
    - `docs/PROJECT_BRIEF.md`
    - `docs/CODE_STYLE.md`
    - `docs/PRD.md`
-   - `docs/SPEC.md` or latest `docs/specs/*`
+   - latest `docs/specs/*`
    - `docs/DESIGN.md` only for UI, frontend, desktop, mobile, or component work
    - `docs/BRAND.md` only for public brand, naming, marketing, identity, or copy work
    - `docs/TASKS.md`
@@ -47,13 +47,11 @@ The gate should decide:
    - `spec-workflow` when behavior, acceptance criteria, or compatibility must be specified
    - `planning-engine` when implementation order, validation, or migration needs structure
    - `repository-governance` or `workspace-migration` when setup or migration is the real task
-   - direct implementation only when scope, constraints, and validation are already clear
+   - direct implementation when scope, constraints, and validation are already clear
 
 ## Question Budget
 
-Default budget: ask at most 5 questions.
-
-Allowed range: 3-7 questions when the request genuinely needs more or less.
+Ask 0-5 questions. Ask zero when repository evidence already resolves every material gap.
 
 Each question must:
 
@@ -62,7 +60,7 @@ Each question must:
 - state the trade-off behind that recommendation
 - avoid asking for facts that can be discovered from the repository
 
-If confidence is high enough to proceed, record remaining ambiguity under `Open Questions` in the target PRD, spec, or plan instead of blocking all work.
+If confidence is high enough to proceed, record non-blocking ambiguity under `Open Questions` in an existing relevant PRD, spec, or plan instead of creating a document or blocking all work.
 
 ## Handoff Shape
 
@@ -85,7 +83,7 @@ Use this structure in the conversation, or paste it into the target PRD, spec, o
 
 `Implementation readiness` must be one of:
 
-- `ready`: implementation can begin after updating the stated docs
+- `ready`: implementation can begin now; update a target document only when the change needs one
 - `needs PRD`: product intent or scope is not stable enough
 - `needs spec`: behavior, acceptance criteria, or compatibility is not stable enough
 - `needs plan`: implementation order, migration, rollback, or validation is not stable enough
@@ -96,7 +94,7 @@ Use this structure in the conversation, or paste it into the target PRD, spec, o
 Prefer existing OpenArc documents over new document families:
 
 - Product intent, audience, goals, and non-goals -> `docs/PRD.md`
-- Behavior, compatibility, acceptance criteria, and feature scope -> `docs/SPEC.md` or `docs/specs/*`
+- Behavior, compatibility, acceptance criteria, and feature scope -> `docs/specs/*`
 - Implementation sequence, validation, rollback, and migration -> `docs/plans/*`
 - Active execution status -> `docs/TASKS.md`
 - Recent AI-assisted changes and decisions -> `docs/CHANGELOG_AI.md`
@@ -121,7 +119,9 @@ If the repository already has an ADR convention, follow it. Otherwise, ask befor
 
 ## Rules
 
-- Do not implement during the clarification gate.
+- Do not implement until the gate has established `ready`.
+- When readiness is `ready` and the original request already authorizes implementation, continue in the same turn; do not ask the user to say "continue" again.
+- When the user requested clarification only, stop after the handoff even if readiness is `ready`.
 - Do not create PRD, design, brand, or ADR documents just because the gate ran.
 - Do not ask unlimited interview questions.
 - Do not import third-party skills as core dependencies.

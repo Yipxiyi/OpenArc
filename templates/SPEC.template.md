@@ -1,14 +1,13 @@
-# Spec: <version> <feature>
+# Spec: <feature>
 
 ## Status
 
 Draft
 
-## Version Decision
+## Release Impact (Optional)
 
-- Current Version:
-- Proposed Version:
-- Change Type: Patch / Minor / Major
+- Change Type: Patch / Minor / Major / None
+- Proposed Release Version:
 - User Confirmation:
 
 ## Background
@@ -36,12 +35,6 @@ Draft
 ## Existing System Review
 
 ## Technical Approach
-
-## Implementation Plan
-
-## Tasks
-
-- [ ] Task
 
 ## Acceptance Criteria
 

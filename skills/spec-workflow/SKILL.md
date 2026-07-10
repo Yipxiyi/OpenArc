@@ -1,11 +1,11 @@
 ---
 name: spec-workflow
-description: Use when creating or updating OpenArc feature specs with versioning, acceptance criteria, implementation tracking, and technical direction.
+description: Use when creating or updating OpenArc feature specs with acceptance criteria, compatibility decisions, and technical direction.
 ---
 
 # Spec Workflow
 
-Use this skill when a feature, system change, or product direction needs a structured spec before implementation.
+Use this skill when behavior, acceptance criteria, compatibility, or product direction needs durable alignment before implementation. Routine work with clear behavior and validation does not need a spec.
 
 ## Goal
 
@@ -21,10 +21,12 @@ Recommended file names:
 
 ```txt
 docs/specs/
-  0.1.0-auth-system.md
-  0.2.0-editor-upgrade.md
-  0.3.0-cloud-sync.md
+  auth-system.md
+  editor-upgrade.md
+  cloud-sync.md
 ```
+
+Use a stable, descriptive kebab-case slug. Do not couple the file name to a release version or rename the spec when the release version changes.
 
 ## Status Values
 
@@ -34,19 +36,19 @@ docs/specs/
 - Implemented
 - Verified
 
-## Version Selection
+## Release Impact
 
-Use `version-governance` before choosing a new spec version when the user asks for a change to an existing feature or governance system.
+Draft and name the spec without waiting for version confirmation.
 
-Default mapping:
+Use `version-governance` only when the proposed change is release-visible. When useful, record an optional `Release Impact` section with:
 
-- Patch spec: small clarification, typo, doc-only correction, or non-behavioral refinement.
-- Minor spec: backward-compatible feature, optional workflow, new template, or new section.
-- Major spec: breaking behavior, renamed public workflow, removed capability, or incompatible governance structure.
+- change type
+- proposed release version
+- confirmation status
 
-Propose the exact version and ask the user to confirm before naming the spec file.
+The release manifest, release changelog, and tags remain authoritative for the released version.
 
-## Required Spec Sections
+## Spec Sections
 
 Use `templates/SPEC.template.md` as the baseline:
 
@@ -57,8 +59,7 @@ Use `templates/SPEC.template.md` as the baseline:
 - Requirements
 - Existing System Review
 - Technical Approach
-- Implementation Plan
-- Tasks
+- Release Impact when release-visible
 - Acceptance Criteria
 - Risks
 - Open Questions
@@ -67,9 +68,11 @@ Use `templates/SPEC.template.md` as the baseline:
 ## Rules
 
 - Keep specs concrete and implementation-facing.
+- Include only sections relevant to the change. Keep implementation sequencing in `docs/plans/*` and active coordination in `docs/TASKS.md` instead of duplicating either inside the spec.
+- Do not create a spec solely because a change touches multiple files.
 - Separate goals from non-goals.
 - Include acceptance criteria that can be verified.
 - Preserve Clarification Gate decisions in Background, Goals, Non-Goals, Requirements, Risks, or Open Questions instead of creating a separate intake document by default.
 - Update status and changelog after implementation.
 - Do not use specs as a dumping ground for unrelated product ideas.
-- Record the confirmed version decision in the changelog.
+- Use the spec changelog for spec revisions, not as the source of truth for release versions.

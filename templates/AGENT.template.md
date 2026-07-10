@@ -26,14 +26,17 @@ Rarely read:
 
 ## Working Rules
 
-- Clarify broad, ambiguous, risky, or new work before PRD, spec, plan, or implementation.
-- Spec first.
-- Plan before implementation when scope or risk is non-trivial.
+- Ask 0-5 questions only for material unknowns that change scope, behavior, compatibility, migration, or risk. Ask zero and continue in the same turn when readiness is `ready` and the original request authorizes implementation.
+- Implement routine work directly when scope, expected behavior, and validation are clear.
+- Use `docs/specs/*` when behavior, acceptance criteria, or compatibility needs durable alignment.
+- Use `docs/plans/*` when sequencing, migration, rollback, or validation risk needs structure.
+- Use `docs/TASKS.md` only when work spans multiple stages, people, or agents.
 - Prefer minimal changes.
 - Reuse existing systems.
 - Infer code style from existing config and code before asking for preferences.
 - Avoid duplicate abstractions.
 - Match governance scope to repository profile; script, CLI, automation, library, and docs-only repositories do not need design or brand docs by default.
+- For an `unknown` profile, use only a README and one agent guide as the minimum baseline; do not infer other governance requirements.
 - For UI work, check `docs/DESIGN.md` and existing components before creating a new component.
 - Add reusable component patterns to `docs/DESIGN.md`; keep one-off component rationale in the related spec or plan.
 - Keep diffs reviewable.
@@ -45,21 +48,19 @@ Rarely read:
 
 ## Execution Workflow
 
-1. Analyze repository.
-2. Read governance docs.
-3. Run clarification when the goal or constraints are not stable.
-4. Create or update spec.
-5. Create implementation plan.
-6. Create tasks.
-7. Implement incrementally.
-8. Validate.
-9. Update documentation.
+1. Inspect the affected repository flow and existing conventions.
+2. For routine work, implement the smallest coherent change and validate it.
+3. For non-trivial work, clarify material unknowns, then choose a spec, a plan, or both only when each is justified.
+4. Update `docs/TASKS.md` only for multi-stage or multi-person/agent coordination.
+5. Implement incrementally.
+6. Validate.
+7. Update relevant existing documentation.
 
 ## Change Tracking
 
-After completing implementation or documentation work:
+When the repository already uses `docs/CHANGELOG_AI.md` and the change is material:
 
-1. Update `docs/CHANGELOG_AI.md`.
+1. Update `docs/CHANGELOG_AI.md`; do not create it solely for routine work.
 2. Keep entries concise.
 3. Record:
    - changed files
