@@ -83,6 +83,7 @@ Load the narrowest skill for the request. Do not load the whole set by default.
 
 ```text
 OpenArc/
+├── .agents/plugins/marketplace.json
 ├── .codex-plugin/plugin.json
 ├── .claude-plugin/plugin.json
 ├── skills/*/SKILL.md
@@ -98,6 +99,7 @@ OpenArc/
 └── LICENSE
 ```
 
+- `.agents/plugins/marketplace.json` exposes the pinned GitHub release to Codex.
 - `.codex-plugin/plugin.json` and `.claude-plugin/plugin.json` describe the same plugin and must keep version parity.
 - `skills/` contains routeable instructions.
 - `templates/` contains optional scaffolds, not mandatory repository output.

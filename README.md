@@ -47,11 +47,19 @@ Choose an integration:
 
 | Tool | Fastest local path | Details |
 | --- | --- | --- |
-| Codex | Configure the current local marketplace, then install `openarc@local-codex-plugins`. | [Codex install](docs/INSTALL.md#codex) |
+| Codex | Add `Yipxiyi/OpenArc` as a pinned marketplace, then install `openarc@openarc`. | [Codex install](docs/INSTALL.md#codex) |
 | Claude Code | Run `claude --plugin-dir .` for the current session. | [Claude Code](docs/INSTALL.md#claude-code) |
 | Cursor | Copy the project rule with `cp -n` so existing rules are preserved. | [Cursor](docs/INSTALL.md#cursor) |
 
-The current Codex flow is a local marketplace install. The complete first-install and existing-marketplace paths are documented in [Install OpenArc](docs/INSTALL.md).
+For Codex, install the latest pinned release:
+
+```bash
+codex plugin marketplace add Yipxiyi/OpenArc --ref v0.7.0
+codex plugin add openarc@openarc
+codex plugin list --marketplace openarc
+```
+
+The complete upgrade and local-development paths are documented in [Install OpenArc](docs/INSTALL.md).
 
 ### 2. Start with a read-only audit
 

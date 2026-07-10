@@ -1,6 +1,6 @@
 # Install OpenArc
 
-OpenArc can be loaded by Codex, Claude Code, or Cursor. The repository is a single plugin package, not a Codex marketplace root.
+OpenArc can be loaded by Codex, Claude Code, or Cursor. The repository contains both the plugin package and the Codex marketplace manifest that points to its pinned GitHub release.
 
 ## Get the source
 
@@ -14,7 +14,41 @@ Continue only when the last command reports `OpenArc doctor: PASS`.
 
 ## Codex
 
-Codex installs a snapshot from a configured marketplace. Keep one managed copy at `~/plugins/openarc`:
+### Install a pinned release
+
+```bash
+codex plugin marketplace add Yipxiyi/OpenArc --ref v0.7.0
+codex plugin add openarc@openarc
+codex plugin list --marketplace openarc
+```
+
+Success means `openarc@openarc` is listed as installed and enabled at version `0.7.0`. Codex materializes the installed package under `~/.codex/plugins/cache/openarc/openarc/0.7.0`.
+
+Restart Codex, then ask:
+
+```text
+Use OpenArc to audit this repository read-only.
+```
+
+The marketplace is pinned to the release tag. Installation therefore remains reproducible even when `main` moves forward.
+
+### Upgrade a pinned release
+
+Pinned marketplaces do not follow new tags automatically. Remove the installed snapshot and old marketplace, then add the new release ref:
+
+```bash
+codex plugin remove openarc@openarc
+codex plugin marketplace remove openarc
+codex plugin marketplace add Yipxiyi/OpenArc --ref v0.7.1
+codex plugin add openarc@openarc
+codex plugin list --marketplace openarc
+```
+
+Replace `v0.7.1` with the release you intend to install. Verify the version before restarting Codex.
+
+### Local development
+
+Use a local marketplace only when testing an unpublished checkout. Keep one managed copy at `~/plugins/openarc`:
 
 ```bash
 mkdir -p ~/plugins/openarc
@@ -30,15 +64,11 @@ rsync -a --delete --delete-excluded --exclude '.git/' plugins/openarc/ ~/plugins
 
 The destination is a managed copy; `--delete` removes stale files from earlier versions.
 
-### New local marketplace
-
-If `~/.agents/plugins/marketplace.json` does not exist, create its parent directory:
+If `~/.agents/plugins/marketplace.json` does not exist, create its parent directory and add the complete document below:
 
 ```bash
 mkdir -p ~/.agents/plugins
 ```
-
-Then create `~/.agents/plugins/marketplace.json` with the complete document below:
 
 ```json
 {
@@ -70,21 +100,13 @@ codex plugin marketplace add ~
 codex plugin add openarc@local-codex-plugins
 ```
 
-### Existing local marketplace
-
-Check the registered marketplaces first:
+If `local-codex-plugins` already exists, preserve its manifest, add only the OpenArc object above to its `plugins` array, and skip `marketplace add`. Check first with:
 
 ```bash
 codex plugin marketplace list
 ```
 
-If `local-codex-plugins` already exists, preserve its manifest and add only the OpenArc object shown above to its `plugins` array. Do not run `marketplace add` again. Then install:
-
-```bash
-codex plugin add openarc@local-codex-plugins
-```
-
-### Verify
+Verify the unpublished package and installed snapshot:
 
 ```bash
 python3 ~/plugins/openarc/scripts/openarc.py doctor ~/plugins/openarc
@@ -103,9 +125,7 @@ Restart Codex, then ask:
 Use OpenArc to audit this repository read-only.
 ```
 
-### Upgrade
-
-Update the source, refresh the managed copy, and reinstall the snapshot:
+Refresh a local-development snapshot after changing the checkout:
 
 ```bash
 git pull --ff-only

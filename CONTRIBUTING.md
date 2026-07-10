@@ -45,6 +45,7 @@ The maintainer must confirm the proposed version before release work. Keep these
 
 - `.codex-plugin/plugin.json` version
 - `.claude-plugin/plugin.json` version
+- `.agents/plugins/marketplace.json` source ref
 - release tag `v<version>`
 - matching `CHANGELOG.md` section
 

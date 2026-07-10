@@ -141,6 +141,31 @@ class ScanProfileTests(unittest.TestCase):
         self.assertIn("plugin.json version must be valid SemVer", result.stdout)
         self.assertIn(".claude-plugin/plugin.json version must be valid SemVer", result.stdout)
 
+    def test_doctor_rejects_marketplace_ref_version_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "openarc"
+            shutil.copytree(
+                PLUGIN_ROOT,
+                root,
+                ignore=shutil.ignore_patterns(".git", "__pycache__"),
+            )
+            path = root / ".agents" / "plugins" / "marketplace.json"
+            marketplace = json.loads(path.read_text())
+            marketplace["plugins"][0]["source"]["ref"] = "v0.6.2"
+            path.write_text(json.dumps(marketplace))
+
+            result = subprocess.run(
+                [sys.executable, str(OPENARC), "doctor", str(root)],
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn(
+            "marketplace plugin ref must match plugin version: v0.7.0",
+            result.stdout,
+        )
+
     def test_script_repo_does_not_recommend_design_or_brand_governance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

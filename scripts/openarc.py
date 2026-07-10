@@ -13,6 +13,7 @@ from typing import Any
 
 
 REQUIRED_PLUGIN_FILES = [
+    ".agents/plugins/marketplace.json",
     ".codex-plugin/plugin.json",
     ".claude-plugin/plugin.json",
     "README.md",
@@ -219,6 +220,8 @@ SEMVER_PATTERN = re.compile(
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
 
+OPENARC_REPOSITORY_URL = "https://github.com/Yipxiyi/OpenArc.git"
+
 
 def rel_exists(root: Path, rel_path: str) -> bool:
     return (root / rel_path).exists()
@@ -257,6 +260,43 @@ def manifest_matches_plugin_root(plugin_root: Path, manifest: dict[str, Any]) ->
         and plugin_root.name == version
         and plugin_root.parent.name.lower() == name.lower()
     )
+
+
+def validate_marketplace_manifest(
+    marketplace: dict[str, Any], plugin_version: Any
+) -> list[str]:
+    failures: list[str] = []
+    if marketplace.get("name") != "openarc":
+        failures.append("marketplace name must be openarc")
+    interface = marketplace.get("interface")
+    if not isinstance(interface, dict) or interface.get("displayName") != "OpenArc":
+        failures.append("marketplace interface.displayName must be OpenArc")
+
+    plugins = marketplace.get("plugins")
+    if not isinstance(plugins, list) or len(plugins) != 1 or not isinstance(plugins[0], dict):
+        failures.append("marketplace must contain exactly one OpenArc plugin entry")
+        return failures
+
+    plugin = plugins[0]
+    if plugin.get("name") != "openarc":
+        failures.append("marketplace plugin name must be openarc")
+    source = plugin.get("source")
+    if not isinstance(source, dict) or source.get("source") != "url":
+        failures.append("marketplace plugin source must be url")
+    else:
+        if source.get("url") != OPENARC_REPOSITORY_URL:
+            failures.append(f"marketplace plugin URL must be {OPENARC_REPOSITORY_URL}")
+        expected_ref = f"v{plugin_version}"
+        if source.get("ref") != expected_ref:
+            failures.append(f"marketplace plugin ref must match plugin version: {expected_ref}")
+    if plugin.get("policy") != {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL",
+    }:
+        failures.append("marketplace plugin policy must allow installation on install")
+    if plugin.get("category") != "Developer Tools":
+        failures.append("marketplace plugin category must be Developer Tools")
+    return failures
 
 
 def parse_skill_frontmatter(path: Path) -> dict[str, str]:
@@ -339,6 +379,17 @@ def doctor(plugin_root: Path) -> int:
             if claude_manifest.get("version") != manifest.get("version"):
                 failures.append("Claude and Codex plugin manifest versions must match")
             warnings.extend(find_manifest_placeholders(claude_manifest))
+
+    marketplace_path = plugin_root / ".agents" / "plugins" / "marketplace.json"
+    if marketplace_path.exists():
+        try:
+            marketplace = load_json(marketplace_path)
+        except Exception as exc:  # noqa: BLE001 - command-line diagnostic
+            failures.append(f"invalid .agents/plugins/marketplace.json: {exc}")
+        else:
+            failures.extend(
+                validate_marketplace_manifest(marketplace, manifest.get("version"))
+            )
 
     skills_root = plugin_root / "skills"
     if not skills_root.exists():

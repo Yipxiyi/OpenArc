@@ -6,6 +6,12 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.7.0
+
+- Added a repository-hosted Codex marketplace manifest for pinned remote installation from GitHub releases.
+- Added `doctor` validation for marketplace identity, source URL, release ref, policy, category, and plugin version parity.
+- Updated Codex installation and upgrade guidance for the standard remote marketplace flow while retaining a separate local-development path.
+
 ## 0.6.2
 
 - Rebuilt the public README around a two-minute, read-only first-run path and moved the Chinese guide into `README.zh-CN.md`.

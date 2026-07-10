@@ -47,11 +47,19 @@ python3 scripts/openarc.py doctor .
 
 | 工具 | 最短本地路径 | 详细说明 |
 | --- | --- | --- |
-| Codex | 配置本地 marketplace，再安装 `openarc@local-codex-plugins`。 | [Codex 安装](docs/INSTALL.md#codex) |
+| Codex | 把 `Yipxiyi/OpenArc` 添加为固定版本 marketplace，再安装 `openarc@openarc`。 | [Codex 安装](docs/INSTALL.md#codex) |
 | Claude Code | 运行 `claude --plugin-dir .`，仅在当前会话加载。 | [Claude Code](docs/INSTALL.md#claude-code) |
 | Cursor | 使用 `cp -n` 复制项目规则，避免覆盖已有文件。 | [Cursor](docs/INSTALL.md#cursor) |
 
-当前 Codex 使用本地 marketplace 安装。首次安装、已有 marketplace 和升级流程见 [安装指南](docs/INSTALL.md)。
+在 Codex 中安装最新的固定版本：
+
+```bash
+codex plugin marketplace add Yipxiyi/OpenArc --ref v0.7.0
+codex plugin add openarc@openarc
+codex plugin list --marketplace openarc
+```
+
+完整升级流程和本地开发安装方式见 [安装指南](docs/INSTALL.md)。
 
 ### 2. 从只读审计开始
 
