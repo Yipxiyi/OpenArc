@@ -6,6 +6,14 @@ This project follows semantic versioning.
 
 ## Unreleased
 
+## 0.5.1
+
+- Fixed audit routing so read-only reviews do not create or modify governance files without explicit apply intent.
+- Fixed release guidance so PR work does not trigger release automation without an explicit release request and confirmation.
+- Fixed Codex and Cursor installation guidance to install and verify the plugin without overwriting existing agent instructions or creating nested plugin directories.
+- Strengthened `openarc.py doctor` and release validation for missing skills, invalid frontmatter, referenced assets, version parity, and test failures.
+- Fixed repository scans so invalid paths fail clearly instead of returning a successful `unknown` report.
+
 ## 0.5.0
 
 - Added `clarification-gate` as a first-class OpenArc skill for clarifying broad, ambiguous, risky, or new work before PRD, spec, plan, or implementation.

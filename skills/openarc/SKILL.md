@@ -14,7 +14,7 @@ Map the user's request to the narrowest skill:
 | User Intent | Use |
 | --- | --- |
 | "Set up OpenArc here" | `repository-governance`, then profile-specific governance skills as needed |
-| "What is missing?" / "Audit this repo" | `repository-governance`, then run the scan helper if available |
+| "What is missing?" / "Audit this repo" | `repository-governance` in read-only audit mode, then run the scan helper if available |
 | "Clarify this request" / "New feature" / "New goal" | `clarification-gate`, then route to PRD, spec, plan, or implementation |
 | "Write PRD" | `product-governance` |
 | "Write spec" | `spec-workflow` |
@@ -24,7 +24,8 @@ Map the user's request to the narrowest skill:
 | "Organize assets" | `assets-governance` |
 | "Migrate existing workspace" | `workspace-migration` |
 | "Version this change" | `version-governance` |
-| "Branch, commit, PR, release" | `release-workflow` |
+| "Branch, commit, or PR" | `release-workflow`; stop after the requested git/PR work |
+| "Release or publish" | `release-workflow`; require an explicit release request and confirmation |
 | "Prepare for open source" | `open-source-maintenance` |
 
 ## Default First Pass
@@ -56,6 +57,9 @@ Use script output as evidence, not as a replacement for judgment.
 ## Rules
 
 - Do not load every OpenArc skill by default.
+- Treat audit, review, scan, and "what is missing?" requests as read-only. Report findings without creating or modifying files.
+- Write governance files only when the user explicitly requests setup, initialization, apply, repair, or migration work.
+- A branch, commit, or PR request does not authorize a release. Trigger or publish a release only after an explicit release request and confirmation.
 - Do not create all governance docs unless the user asks for full setup.
 - Use `clarification-gate` before PRD, spec, plan, or implementation work when the request is broad, ambiguous, risky, or new.
 - Do not require `docs/DESIGN.md`, `docs/BRAND.md`, or `docs/assets/*` for script, CLI, automation, library, or docs-only repositories unless the repo already has UI or brand signals.

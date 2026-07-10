@@ -17,6 +17,30 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Validate release
+        run: |
+          python3 scripts/openarc.py doctor .
+          python3 -m unittest discover -s tests -v
+          python3 - "${GITHUB_REF_NAME#v}" <<'PY'
+          import json
+          import re
+          import sys
+          from pathlib import Path
+          from scripts.openarc import is_semver
+
+          tag_version = sys.argv[1]
+          if not is_semver(tag_version):
+              raise SystemExit(f"release tag is not valid SemVer: {tag_version}")
+          versions = [
+              json.loads(Path(path).read_text())["version"]
+              for path in (".codex-plugin/plugin.json", ".claude-plugin/plugin.json")
+          ]
+          if versions != [tag_version, tag_version]:
+              raise SystemExit(f"tag/manifest version mismatch: tag={tag_version}, manifests={versions}")
+          if not re.search(rf"^## (?:\[)?{re.escape(tag_version)}(?:\])?(?:\s|$)", Path("CHANGELOG.md").read_text(), re.MULTILINE):
+              raise SystemExit(f"CHANGELOG.md has no {tag_version} section")
+          PY
+
       - name: Extract version from tag
         id: version
         run: |

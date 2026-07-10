@@ -74,18 +74,20 @@ Update `CHANGELOG.md` for user-visible changes before opening the PR.
 
 ## GitHub Release Update
 
-After the PR is ready, trigger the repository's release update mechanism:
+PR completion is the default stopping point. Preparing release notes, making a branch, committing, or opening/merging a PR does not authorize a release.
+
+Only trigger the repository's release update mechanism when the user explicitly requests a release and confirms the version and publish behavior:
 
 1. Prefer the repo's existing GitHub Actions workflow, release-drafter config, semantic-release setup, or documented release script.
-2. If a workflow exists, trigger it with the confirmed version and release notes.
-3. If no release automation exists, create or update a draft GitHub release only after the user confirms.
-4. Never publish a final release without explicit user confirmation unless the repo automation already defines that behavior.
+2. Inspect whether the trigger publishes immediately or creates a draft, then confirm that behavior before running it.
+3. Trigger the workflow with the confirmed version and release notes, or create/update a draft release when no automation exists.
+4. Never trigger or publish a final release from an implied follow-on step.
 
 ## Merge Rules
 
 - Merge only after required checks pass or the user explicitly accepts the risk.
 - Use the repository's preferred merge strategy.
-- After merge, verify release automation ran or report why it did not.
+- After merge, verify release automation only when a release was explicitly requested; otherwise stop at the merge result.
 
 ## Final Report
 

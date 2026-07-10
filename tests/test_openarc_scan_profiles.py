@@ -1,4 +1,5 @@
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -39,6 +40,74 @@ class ScanProfileTests(unittest.TestCase):
             text=True,
         )
         self.assertIn("OpenArc doctor: PASS", result.stdout)
+
+    def test_scan_rejects_missing_or_non_directory_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            file_path = root / "file"
+            file_path.write_text("not a repo\n")
+            for invalid_path, message in (
+                (root / "missing", "does not exist"),
+                (file_path, "is not a directory"),
+            ):
+                result = subprocess.run(
+                    [sys.executable, str(OPENARC), "scan", str(invalid_path)],
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(result.stdout, "")
+                self.assertIn(message, result.stderr)
+
+    def test_doctor_rejects_missing_skill_asset_and_malformed_frontmatter(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "openarc"
+            shutil.copytree(
+                PLUGIN_ROOT,
+                root,
+                ignore=shutil.ignore_patterns(".git", "__pycache__"),
+            )
+            shutil.rmtree(root / "skills" / "clarification-gate")
+            (root / "assets" / "openarc_icon.png").unlink()
+            (root / "skills" / "openarc" / "SKILL.md").write_text(
+                "---\nname: openarc\ndescription: Use when broken\n"
+            )
+
+            result = subprocess.run(
+                [sys.executable, str(OPENARC), "doctor", str(root)],
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertIn("missing required skill: skills/clarification-gate/SKILL.md", result.stdout)
+        self.assertIn("missing manifest asset: ./assets/openarc_icon.png", result.stdout)
+        self.assertIn("skill name mismatch: skills/openarc", result.stdout)
+
+    def test_doctor_rejects_non_semver_manifest_versions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "openarc"
+            shutil.copytree(
+                PLUGIN_ROOT,
+                root,
+                ignore=shutil.ignore_patterns(".git", "__pycache__"),
+            )
+            for rel_path in (".codex-plugin/plugin.json", ".claude-plugin/plugin.json"):
+                path = root / rel_path
+                manifest = json.loads(path.read_text())
+                manifest["version"] = "banana"
+                path.write_text(json.dumps(manifest))
+
+            result = subprocess.run(
+                [sys.executable, str(OPENARC), "doctor", str(root)],
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("plugin.json version must be valid SemVer", result.stdout)
+        self.assertIn(".claude-plugin/plugin.json version must be valid SemVer", result.stdout)
 
     def test_script_repo_does_not_recommend_design_or_brand_governance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

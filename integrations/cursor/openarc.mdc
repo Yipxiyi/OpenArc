@@ -10,6 +10,7 @@ When the user asks to use OpenArc, scan the repository first and choose the smal
 ## Operating Rules
 
 - Preserve existing repository conventions and source-of-truth files.
+- Keep audit, review, scan, and "what is missing?" requests read-only; write only for explicit setup, initialization, apply, repair, or migration requests.
 - Keep edits small, reviewable, and reversible.
 - Prefer patching existing docs over replacing them.
 - Ask only for material unknowns.
@@ -19,6 +20,7 @@ When the user asks to use OpenArc, scan the repository first and choose the smal
 - Infer code style from existing config and code before asking for preferences.
 - For non-trivial implementation, create or update a spec and plan before coding.
 - For release or packaging work, classify version impact with semantic versioning and update the changelog.
+- Do not treat branch, commit, or PR work as release authorization; trigger or publish only after an explicit release request and confirmation.
 - For UI work, check `docs/DESIGN.md` and existing components before creating a new component.
 - For reusable components, update `docs/DESIGN.md` with a Component Patterns entry in the same change.
 - For one-off components, document the reason in the related spec or plan.

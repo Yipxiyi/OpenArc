@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +24,24 @@ REQUIRED_PLUGIN_FILES = [
 REQUIRED_INTEGRATION_FILES = [
     "integrations/cursor/AGENTS.md",
     "integrations/cursor/openarc.mdc",
+]
+
+REQUIRED_SKILLS = [
+    "assets-governance",
+    "brand-governance",
+    "change-archive-governance",
+    "clarification-gate",
+    "design-governance",
+    "implementation-workflow",
+    "open-source-maintenance",
+    "openarc",
+    "planning-engine",
+    "product-governance",
+    "release-workflow",
+    "repository-governance",
+    "spec-workflow",
+    "version-governance",
+    "workspace-migration",
 ]
 
 REQUIRED_TEMPLATES = [
@@ -175,6 +195,12 @@ LIBRARY_MANIFESTS = {
     "setup.py",
 }
 
+SEMVER_PATTERN = re.compile(
+    r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+    r"(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
+)
+
 
 def rel_exists(root: Path, rel_path: str) -> bool:
     return (root / rel_path).exists()
@@ -188,11 +214,30 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def is_semver(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    match = SEMVER_PATTERN.fullmatch(value)
+    if not match:
+        return False
+    prerelease = match.group(4)
+    return not prerelease or all(
+        not (part.isdigit() and len(part) > 1 and part.startswith("0"))
+        for part in prerelease.split(".")
+    )
+
+
 def parse_skill_frontmatter(path: Path) -> dict[str, str]:
-    text = path.read_text()
+    try:
+        text = path.read_text()
+    except (OSError, UnicodeError):
+        return {}
     if not text.startswith("---\n"):
         return {}
-    _, block, _ = text.split("---", 2)
+    parts = text.split("---", 2)
+    if len(parts) != 3:
+        return {}
+    _, block, _ = parts
     fields: dict[str, str] = {}
     for raw_line in block.splitlines():
         if ":" not in raw_line:
@@ -224,6 +269,22 @@ def doctor(plugin_root: Path) -> int:
                 failures.append("plugin.json license still has placeholder value")
             if manifest.get("skills") != "./skills/":
                 failures.append("plugin.json skills should be ./skills/")
+            if not is_semver(manifest.get("version")):
+                failures.append("plugin.json version must be valid SemVer")
+            interface = manifest.get("interface")
+            if not isinstance(interface, dict):
+                failures.append("plugin.json interface must be an object")
+            else:
+                for field in ("composerIcon", "logo"):
+                    asset = interface.get(field)
+                    if not isinstance(asset, str) or not asset.startswith("./"):
+                        failures.append(f"plugin.json interface.{field} must be a local path")
+                        continue
+                    asset_path = (plugin_root / asset).resolve()
+                    if plugin_root.resolve() not in asset_path.parents:
+                        failures.append(f"plugin.json interface.{field} must stay inside the plugin")
+                    elif not asset_path.is_file():
+                        failures.append(f"missing manifest asset: {asset}")
             warnings.extend(find_manifest_placeholders(manifest))
 
     claude_manifest_path = plugin_root / ".claude-plugin" / "plugin.json"
@@ -237,6 +298,8 @@ def doctor(plugin_root: Path) -> int:
                 failures.append(".claude-plugin/plugin.json name must match plugin folder name")
             if not claude_manifest.get("version"):
                 failures.append(".claude-plugin/plugin.json must include version")
+            elif not is_semver(claude_manifest.get("version")):
+                failures.append(".claude-plugin/plugin.json version must be valid SemVer")
             if claude_manifest.get("version") != manifest.get("version"):
                 failures.append("Claude and Codex plugin manifest versions must match")
             warnings.extend(find_manifest_placeholders(claude_manifest))
@@ -245,6 +308,9 @@ def doctor(plugin_root: Path) -> int:
     if not skills_root.exists():
         failures.append("missing skills directory")
     else:
+        for skill in REQUIRED_SKILLS:
+            if not (skills_root / skill / "SKILL.md").is_file():
+                failures.append(f"missing required skill: skills/{skill}/SKILL.md")
         skill_dirs = sorted(path for path in skills_root.iterdir() if path.is_dir())
         if not skill_dirs:
             failures.append("skills directory has no skill folders")
@@ -299,6 +365,19 @@ def find_manifest_placeholders(manifest: dict[str, Any]) -> list[str]:
 
 
 def scan(repo_root: Path, output_format: str) -> int:
+    if not repo_root.exists():
+        print(
+            f"OpenArc scan: ERROR\n- repository path does not exist: {repo_root}",
+            file=sys.stderr,
+        )
+        return 2
+    if not repo_root.is_dir():
+        print(
+            f"OpenArc scan: ERROR\n- repository path is not a directory: {repo_root}",
+            file=sys.stderr,
+        )
+        return 2
+
     repo_profile = detect_repo_profile(repo_root)
     files = {path: rel_exists(repo_root, path) for path in GOVERNANCE_FILES}
     optional_public_files = {

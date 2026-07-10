@@ -14,7 +14,7 @@
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-2563eb?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-7c3aed?style=for-the-badge&labelColor=4a4a4a">
   <img alt="Cursor rules" src="https://img.shields.io/badge/Cursor-rules-111827?style=for-the-badge&labelColor=4a4a4a">
-  <img alt="Version 0.5.0" src="https://img.shields.io/badge/version-0.5.0-84cc16?style=for-the-badge&labelColor=4a4a4a">
+  <img alt="Version 0.5.1" src="https://img.shields.io/badge/version-0.5.1-84cc16?style=for-the-badge&labelColor=4a4a4a">
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-daa520?style=for-the-badge&labelColor=4a4a4a">
 </p>
 
@@ -146,23 +146,27 @@ python3 plugins/openarc/scripts/openarc.py scan .
 
 ## Install in Codex
 
-For a local Codex install, copy the plugin to `~/plugins/openarc` and register it in `~/.agents/plugins/marketplace.json`.
+Codex installs plugins from a marketplace snapshot; copying the files alone does not install or enable OpenArc.
+
+### First local install
+
+Sync the package to one exact directory. The trailing slashes and `--delete` prevent nested copies and stale files.
 
 From the OpenArc repository root:
 
 ```bash
-mkdir -p ~/plugins
-cp -R . ~/plugins/openarc
+mkdir -p ~/plugins/openarc
+rsync -a --delete --delete-excluded --exclude '.git/' ./ ~/plugins/openarc/
 ```
 
 From a monorepo or vendored checkout where OpenArc lives at `plugins/openarc`:
 
 ```bash
-mkdir -p ~/plugins
-cp -R plugins/openarc ~/plugins/openarc
+mkdir -p ~/plugins/openarc
+rsync -a --delete --delete-excluded --exclude '.git/' plugins/openarc/ ~/plugins/openarc/
 ```
 
-Then add this entry to the `plugins` array in `~/.agents/plugins/marketplace.json`:
+Add this entry once to the `plugins` array in `~/.agents/plugins/marketplace.json`:
 
 ```json
 {
@@ -179,16 +183,37 @@ Then add this entry to the `plugins` array in `~/.agents/plugins/marketplace.jso
 }
 ```
 
-Validate the local install:
+Register the marketplace root once, then perform the actual plugin install:
+
+```bash
+codex plugin marketplace list
+codex plugin marketplace add ~
+codex plugin add openarc@local-codex-plugins
+```
+
+Skip `marketplace add` when `local-codex-plugins` is already listed.
+
+Validate both the package and installed state:
 
 ```bash
 python3 ~/plugins/openarc/scripts/openarc.py doctor ~/plugins/openarc
+codex plugin list --marketplace local-codex-plugins
 ```
 
-Restart Codex after registering the plugin. Then try:
+Restart Codex after installation. Then try:
 
 ```text
 Use OpenArc here.
+```
+
+### Upgrade an existing local install
+
+Sync the new package with the same `rsync` command above, then refresh Codex's installed snapshot and verify the reported version:
+
+```bash
+codex plugin remove openarc@local-codex-plugins
+codex plugin add openarc@local-codex-plugins
+codex plugin list --marketplace local-codex-plugins
 ```
 
 ## Install in Claude Code
@@ -225,19 +250,7 @@ If OpenArc is published through a Claude Code plugin source, install it with Cla
 
 Cursor does not install Codex or Claude Code plugins directly. Use the OpenArc Cursor adapter files instead.
 
-From the OpenArc repository root, copy the root-instruction adapter into the target project:
-
-```bash
-cp integrations/cursor/AGENTS.md <target-repo>/AGENTS.md
-```
-
-If OpenArc is vendored under the target project at `plugins/openarc`:
-
-```bash
-cp plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
-```
-
-For Cursor Project Rules from the OpenArc repository root:
+The default installation is a Cursor Project Rule. From the OpenArc repository root:
 
 ```bash
 mkdir -p <target-repo>/.cursor/rules
@@ -251,13 +264,27 @@ mkdir -p .cursor/rules
 cp plugins/openarc/integrations/cursor/openarc.mdc .cursor/rules/openarc.mdc
 ```
 
+Optionally use the root-instruction adapter only when the target has no `AGENTS.md`:
+
+```bash
+cp -n integrations/cursor/AGENTS.md <target-repo>/AGENTS.md
+```
+
+For a vendored checkout:
+
+```bash
+cp -n plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
+```
+
+If `AGENTS.md` already exists, `cp -n` leaves it untouched; merge only the relevant OpenArc rules into the existing file instead of replacing it.
+
 Then ask Cursor Agent:
 
 ```text
 Use OpenArc here.
 ```
 
-Use `AGENTS.md` for a single project-wide instruction file. Use `.cursor/rules/openarc.mdc` when the target repository already manages Cursor project rules.
+Prefer `.cursor/rules/openarc.mdc`. Use `AGENTS.md` only when a single shared project-wide instruction file is intentional.
 
 ## Plugin Layout
 
@@ -568,23 +595,27 @@ python3 plugins/openarc/scripts/openarc.py scan .
 
 ## 在 Codex 中安装
 
-本地 Codex 安装时，将插件复制到 `~/plugins/openarc`，并注册到 `~/.agents/plugins/marketplace.json`。
+Codex 从 marketplace snapshot 安装插件；只复制文件并不会安装或启用 OpenArc。
+
+### 首次本地安装
+
+把插件同步到唯一目标目录。命令中的尾部斜杠和 `--delete` 可避免目录嵌套与旧文件残留。
 
 从 OpenArc 仓库根目录执行：
 
 ```bash
-mkdir -p ~/plugins
-cp -R . ~/plugins/openarc
+mkdir -p ~/plugins/openarc
+rsync -a --delete --delete-excluded --exclude '.git/' ./ ~/plugins/openarc/
 ```
 
 如果 OpenArc 位于 monorepo 或目标仓库的 `plugins/openarc`：
 
 ```bash
-mkdir -p ~/plugins
-cp -R plugins/openarc ~/plugins/openarc
+mkdir -p ~/plugins/openarc
+rsync -a --delete --delete-excluded --exclude '.git/' plugins/openarc/ ~/plugins/openarc/
 ```
 
-然后把下面条目加入 `~/.agents/plugins/marketplace.json` 的 `plugins` 数组：
+把下面条目一次性加入 `~/.agents/plugins/marketplace.json` 的 `plugins` 数组：
 
 ```json
 {
@@ -601,16 +632,37 @@ cp -R plugins/openarc ~/plugins/openarc
 }
 ```
 
-校验本地安装：
+一次性注册 marketplace 根目录，然后执行真正的插件安装：
+
+```bash
+codex plugin marketplace list
+codex plugin marketplace add ~
+codex plugin add openarc@local-codex-plugins
+```
+
+如果 `local-codex-plugins` 已在列表中，跳过 `marketplace add`。
+
+同时校验插件包和安装状态：
 
 ```bash
 python3 ~/plugins/openarc/scripts/openarc.py doctor ~/plugins/openarc
+codex plugin list --marketplace local-codex-plugins
 ```
 
-注册后重启 Codex，然后尝试：
+安装后重启 Codex，然后尝试：
 
 ```text
 Use OpenArc here.
+```
+
+### 升级已有本地安装
+
+先用上面同一条 `rsync` 命令同步新版本，再刷新 Codex 的已安装 snapshot，并核对显示的版本：
+
+```bash
+codex plugin remove openarc@local-codex-plugins
+codex plugin add openarc@local-codex-plugins
+codex plugin list --marketplace local-codex-plugins
 ```
 
 ## 在 Claude Code 中安装
@@ -647,19 +699,7 @@ claude --plugin-dir ~/plugins/openarc
 
 Cursor 不能直接安装 Codex 或 Claude Code 插件。OpenArc 提供 Cursor 适配文件。
 
-从 OpenArc 仓库根目录复制项目级指令适配文件到目标仓库：
-
-```bash
-cp integrations/cursor/AGENTS.md <target-repo>/AGENTS.md
-```
-
-如果 OpenArc 位于目标仓库的 `plugins/openarc`：
-
-```bash
-cp plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
-```
-
-从 OpenArc 仓库根目录复制 Cursor Project Rules 适配文件：
+默认安装 Cursor Project Rule。从 OpenArc 仓库根目录执行：
 
 ```bash
 mkdir -p <target-repo>/.cursor/rules
@@ -673,13 +713,27 @@ mkdir -p .cursor/rules
 cp plugins/openarc/integrations/cursor/openarc.mdc .cursor/rules/openarc.mdc
 ```
 
+只有目标仓库不存在 `AGENTS.md` 时，才可选使用项目级指令适配文件：
+
+```bash
+cp -n integrations/cursor/AGENTS.md <target-repo>/AGENTS.md
+```
+
+如果 OpenArc 位于目标仓库的 `plugins/openarc`：
+
+```bash
+cp -n plugins/openarc/integrations/cursor/AGENTS.md ./AGENTS.md
+```
+
+如果 `AGENTS.md` 已存在，`cp -n` 会保持原文件不变；应把必要的 OpenArc 规则合并到现有文件，而不是覆盖它。
+
 然后在 Cursor Agent 中输入：
 
 ```text
 Use OpenArc here.
 ```
 
-如果只需要一个项目级说明文件，用 `AGENTS.md`。如果目标仓库已有 Cursor rules，使用 `.cursor/rules/openarc.mdc` 更合适。
+优先使用 `.cursor/rules/openarc.mdc`。只有明确需要一个共享的项目级指令文件时才使用 `AGENTS.md`。
 
 ## 插件结构
 

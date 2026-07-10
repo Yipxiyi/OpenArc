@@ -1,11 +1,11 @@
 ---
 name: repository-governance
-description: Use when initializing or repairing OpenArc repository governance, detecting source-of-truth docs, and patching or creating AGENT.md or AGENTS.md without destructive rewrites.
+description: Use when auditing repository governance read-only, or when explicitly initializing or repairing governance and patching an agent guide without destructive rewrites.
 ---
 
 # Repository Governance
 
-Use this skill when a repository needs OpenArc governance setup, drift review, or source-of-truth discovery.
+Use this skill when a repository needs OpenArc governance setup, drift review, or source-of-truth discovery. Audit and review requests are read-only by default.
 
 ## Goal
 
@@ -19,9 +19,10 @@ Help agents understand repository structure, identify governance documents, pres
 4. Detect existing code style signals and ask only for material code style preferences not already shown by the repo.
 5. For UI, frontend, desktop, mobile, or component repositories, detect design signals and ask only for material design preferences not already shown by the repo.
 6. Identify conflicts between existing docs and requested OpenArc structure.
-7. Patch existing files when they already carry project intent.
-8. Create missing files only when they are relevant to the detected profile and no suitable existing source exists.
-9. Keep diffs small and reviewable.
+7. For audit, review, scan, or "what is missing?" requests, stop after reporting findings; do not write files.
+8. Only for explicit setup, initialization, apply, repair, or migration requests, patch existing files when they already carry project intent.
+9. Create missing files only when explicitly authorized, relevant to the detected profile, and no suitable existing source exists.
+10. Keep diffs small and reviewable.
 
 If `scripts/openarc.py` is available, run or request:
 
@@ -89,6 +90,7 @@ The guide should cover:
 
 ## Hard Rules
 
+- Keep audits read-only unless the user explicitly asks to apply findings.
 - Do not rewrite existing governance docs just to match the template.
 - Do not invent architecture facts the repository does not show.
 - Do not invent code style preferences when the repository has no evidence; ask concise questions or leave the gap visible in `docs/CODE_STYLE.md`.
